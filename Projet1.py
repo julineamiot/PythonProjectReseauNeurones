@@ -12,7 +12,7 @@ class ReseauNeurones:
         pass
 
     def backPropag(self):
-        pass
+        pass teedt
 
 
 def main():
