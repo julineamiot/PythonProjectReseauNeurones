@@ -1,5 +1,4 @@
-print("Bonjour")
-
+import numpy as np
 
 class ReseauNeurones:
     def __init__(self):
@@ -16,11 +15,11 @@ class ReseauNeurones:
         #elle combine les pixels avec les poids pour donner un score, et  renvoie 0 ou 1 selon le score "
         pass
 
-    def backPropag(self):
-            pass teedt
-
-
-    def main():
+    def backPropag(self, image_matrice, classif):
+        "cette fonction met à jour les poids du réseau en fonction de l'erreur. Elle prend en entrée l'image et la classification"
+        "initale, donc 0 ou 1."
         pass
 
-
+    def main(self):
+        "elle gère l'entraînement et les tests du réseau de neurones. Elle appelle forward et backward pour plusieurs images différentes "
+        pass
