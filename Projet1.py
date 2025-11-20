@@ -14,16 +14,19 @@ class ReseauNeurones:
         imageMatrice = np.asarray(imageGris)
         return imageMatrice
 
-    def forwardPropag(self, image_matrice):
+    def forwardPropag(self, imageMatrice):
         #cette fonction calcule la sortie du réseau, ie donne 0 ou 1. Elle  trasnforme la matrice de pixels en une prédiction.
         #elle combine les pixels avec les poids pour donner un score, et  renvoie 0 ou 1 selon le score "
+        a = imageMatrice.shape
+        for i in range(a[0,0]):
+            for j in range(a[0,1]):
+
         pass
 
     def backPropag(self, image_matrice, classif):
-        "cette fonction met à jour les poids du réseau en fonction de l'erreur. Elle prend en entrée l'image et la classification"
-        "initale, donc 0 ou 1."
+        #cette fonction met à jour les poids du réseau en fonction de l'erreur. Elle prend en entrée l'image et la classification initale, donc 0 ou 1.
         pass
 
-    def main(self):
-        "elle gère l'entraînement et les tests du réseau de neurones. Elle appelle forward et backward pour plusieurs images différentes "
+    def main(self): #fonction principale
+        #elle gère l'entraînement et les tests du réseau de neurones. Elle appelle forward et backward pour plusieurs images différentes
         pass
