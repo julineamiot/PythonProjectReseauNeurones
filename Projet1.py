@@ -1,4 +1,5 @@
 import numpy as np
+from PIL import Image
 
 class ReseauNeurones:
     def __init__(self):
@@ -6,9 +7,12 @@ class ReseauNeurones:
         self.w = None
         self.biais = None
 
-    def ouvrirImage(self, chemin):
+    def ouvrirImage(self):
         #Cette fonction ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255.
-        pass
+        image = Image.open("nom de l'image")
+        imageGris = image.convert("L")
+        imageMatrice = np.asarray(imageGris)
+        return imageMatrice
 
     def forwardPropag(self, image_matrice):
         #cette fonction calcule la sortie du réseau, ie donne 0 ou 1. Elle  trasnforme la matrice de pixels en une prédiction.
