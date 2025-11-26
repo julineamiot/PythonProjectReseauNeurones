@@ -3,11 +3,14 @@ from PIL import Image
 
 class ReseauNeurones:
     def __init__(self):
-        self.poidsInitiaux = np.random
-        self.nbCouches = None
-        self.nbNeuronesCouche = []
+        self.nbCouches = 2
+        self.nbNeuronesCouche = [None, 32, 1]  # entrée, couche cachée, sortie
         self.donneesEntree = None
-        self.fonctionActivation = None
+        self.poidsEntree = None
+        self.poidsSortie = None
+
+    def fonctionActivation(self, x):
+        return np.where(x < 0, -1, 1)
 
     def ouvrirImage(self):
         #Cette fonction ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255.
@@ -15,6 +18,11 @@ class ReseauNeurones:
         imageGris = image.convert("L")
         imageMatrice = np.asarray(imageGris)
         return imageMatrice
+
+    def initialiserPoids(self, taille_image):
+        self.nbNeuronesCouche[0] = taille_image # taille_image = nombre de pixels total
+        self.poidsEntree = np.random.random_sample(taille_image, self.nbNeuronesCouche[1])
+        self.poidsSortie = np.random.random_sample(self.nbNeuronesCouche[1], 1)
 
     def forwardPropag(self, imageMatrice):
         #cette fonction calcule la sortie du réseau, ie donne 0 ou 1. Elle  trasnforme la matrice de pixels en une prédiction.
