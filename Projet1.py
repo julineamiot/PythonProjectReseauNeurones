@@ -5,7 +5,6 @@ class ReseauNeurones:
     def __init__(self):
         self.nbCouches = 2
         self.nbNeuronesCouche = [None, 32, 1]  # entrée, couche cachée, sortie
-        self.donneesEntree = None
         self.poidsEntree = None
         self.poidsSortie = None
 
@@ -49,3 +48,4 @@ class ReseauNeurones:
 
 
 """le porgramme doit orendre en entrée une matrcie numpy de taille paramétrable. Le réseau doit avir une couche d'entrée de la tille de l'image et à la fin on a une sortie. Pour chaque couche, faire produit matriciel entre les indices de la matrice avec poids. Si valeur du neurone inféireur à 0, on renvoie -1, sinon on renvoie 1"""
+
