@@ -5,7 +5,6 @@ class ReseauNeurones:
     def __init__(self):
         self.nbCouches = 2
         self.nbNeuronesCouche = [None, 32, 1]  # entrée, couche cachée, sortie
-        self.donneesEntree = None
         self.poidsEntree = None
         self.poidsSortie = None
 
