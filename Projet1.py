@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-nbNeuronesCouche = [784, 64, 32, 1] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 1 neurone
+nbNeuronesCouche = [784, 64, 32, 10] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 10 neurones
 
 class ReseauNeurones:
     def __init__(self, nbNeuronesCouche):
@@ -24,7 +24,7 @@ class ReseauNeurones:
         imageMatrice = np.asarray(imageGris)
         return imageMatrice
 
-    def initialiserPoids(self, taille_image):
+    def initialiserPoids(self):
         for i in range(self.nbCouches - 1): #-1 car les poids relient les couches entre elles
             poids = np.random.uniform(-1, 1,(self.tailles[i], self.tailles[i + 1]))
             self.poids.append(poids)
@@ -68,8 +68,6 @@ l'image et à la fin on a une sortie. Pour chaque couche, faire produit matricie
 Si valeur du neurone inféireur à 0, on renvoie -1, sinon on renvoie 1"""
 
 
-# MNIST Data Loader Class
-
 class MnistDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
@@ -104,7 +102,8 @@ class MnistDataloader(object):
             image_data = array("B", file.read())
         images = []
         for i in range(size):
-            images.append([0] * rows * cols)
+            img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols]).reshape(rows, cols)
+            images.append(img)
         for i in range(size):
             img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols])
             img = img.reshape(28, 28)
@@ -120,6 +119,7 @@ class MnistDataloader(object):
 
 # Verify Reading Dataset via MnistDataloader class
 
+#Affichage images
 
 # Helper function to show a list of images with their relating titles
 
@@ -141,15 +141,11 @@ def show_images(images, title_texts):
 # Load MINST dataset
 
 
-# if __name__=="__main__":
-if True:
-
+if __name__=="__main__":
     mnist_dataloader = MnistDataloader()
     (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
 
-    #
-    # Show some random training and test images
-    #
+    # Afficher quelques images aléatoires
     images_2_show = []
     titles_2_show = []
     for i in range(0, 10):
@@ -163,3 +159,16 @@ if True:
         titles_2_show.append('test image [' + str(r) + '] = ' + str(y_test[r]))
 
     show_images(images_2_show, titles_2_show)
+
+    # on initialise le réseau
+    reseau = ReseauNeurones(nbNeuronesCouche)
+    reseau.initialiserPoids()
+
+    # on parcourt toutes les images du test
+    print("Parcours de toutes les images du test...")
+    for i, image in enumerate(x_test):
+        sortie = reseau.forwardPropag(image)  # vecteur de 10 valeurs
+        prediction = np.argmax(sortie)  # neurone le plus activé
+        # on affiche seulement les 5 premières images pour ne pas en avoir trop
+        if i < 5:
+            print(f"Image {i}, label réel = {y_test[i]}, prédiction réseau = {prediction}")
