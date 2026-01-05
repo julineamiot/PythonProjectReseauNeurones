@@ -71,10 +71,7 @@ Si valeur du neurone inféireur à 0, on renvoie -1, sinon on renvoie 1"""
 class MnistDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
-
-        #
-        # Set file paths based on added MNIST Datasets
-        #
+        # à changer en fonction de vos chemins d'accès sur vos ordinateurs
         input_path = "C:/Users/Utilisateur/OneDrive/Documents/Cours/TSE/L3/Programmation, magistère/Projet"
         training_images_filepath = input_path + "/train-images.idx3-ubyte"
         training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
@@ -117,11 +114,11 @@ class MnistDataloader(object):
         return (x_train, y_train), (x_test, y_test)
 
 
-# Verify Reading Dataset via MnistDataloader class
+# vérifie la lecture du Dataset via la classe MnistDataloader
 
 #Affichage images
 
-# Helper function to show a list of images with their relating titles
+# Fonction utilitaire pour afficher une liste d’images avec leurs titres correspondants
 
 def show_images(images, title_texts):
     cols = 5
@@ -138,7 +135,7 @@ def show_images(images, title_texts):
         index += 1
 
 
-# Load MINST dataset
+# charger MINST dataset
 
 
 if __name__=="__main__":
