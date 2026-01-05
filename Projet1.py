@@ -6,12 +6,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
+nbNeuronesCouche = [784, 64, 32, 1] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 1 neurone
+
 class ReseauNeurones:
-    def __init__(self):
-        self.nbCouches = 2
-        self.nbNeuronesCouche = [None, 32, 1]  # entrée, couche cachée, sortie
-        self.poidsEntree = None
-        self.poidsSortie = None
+    def __init__(self, nbNeuronesCouche):
+        self.tailles = nbNeuronesCouche
+        self.nbCouches = len(nbNeuronesCouche)
+        self.poids = []
 
     def fonctionActivation(self, x):
         return np.where(x < 0, -1, 1)
@@ -24,23 +25,33 @@ class ReseauNeurones:
         return imageMatrice
 
     def initialiserPoids(self, taille_image):
-        self.nbNeuronesCouche[0] = taille_image # taille_image = nombre de pixels total
-        self.poidsEntree = np.random.random_sample((taille_image, self.nbNeuronesCouche[1]))
-        self.poidsSortie = np.random.random_sample((self.nbNeuronesCouche[1], 1))
+        for i in range(self.nbCouches - 1): #-1 car les poids relient les couches entre elles
+            poids = np.random.uniform(-1, 1,(self.tailles[i], self.tailles[i + 1]))
+            self.poids.append(poids)
+
+        #self.nbNeuronesCouche[0] = taille_image # taille_image = nombre de pixels total
+        #self.poidsEntree = np.random.random_sample((taille_image, self.nbNeuronesCouche[1]))
+        #self.poidsSortie = np.random.random_sample((self.nbNeuronesCouche[1], 1))
 
     def forwardPropag(self, imageMatrice):
         # on transforme la matrice de pixels en vecteur
         pix = imageMatrice.reshape(-1)
 
+        for poids in self.poids:
+            z = np.dot(pix, poids)
+            pix = self.fonctionActivation(z)
+
+        return pix
+
         # produit matriciel entrée x couche cachée
-        z1 = np.dot(pix, self.poidsEntree) #np.dot pour les produits np
-        a1 = self.fonctionActivation(z1)
+        #z1 = np.dot(pix, self.poidsEntree) #np.dot pour les produits np
+        #a1 = self.fonctionActivation(z1)
 
         # produit matriciel cachée x sortie
-        z2 = np.dot(a1, self.poidsSortie)
-        a2 = self.fonctionActivation(z2)
+        #z2 = np.dot(a1, self.poidsSortie)
+        #a2 = self.fonctionActivation(z2)
 
-        return a2
+        #return a2
 
     def backPropag(self, image_matrice, classif):
         "cette fonction met à jour les poids du réseau en fonction de l'erreur. Elle prend en entrée l'image et la classification"
