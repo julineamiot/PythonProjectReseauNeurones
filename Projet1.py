@@ -10,7 +10,7 @@ from PIL import Image
 l'image et à la fin on a une sortie. Pour chaque couche, faire produit matriciel entre les indices de la matrice avec poids. 
 Si valeur du neurone inféireur à 0, on renvoie -1, sinon on renvoie 1"""
 
-nbNeuronesCouche = [784, 64, 32, 10] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 10 neurones
+nbNeuronesCouche = [784, 64, 32, 1] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 1 neurone car doit dire si c'est un x ou  pas
 
 class ReseauNeurones:
     def __init__(self, nbNeuronesCouche):
@@ -20,10 +20,10 @@ class ReseauNeurones:
         self.learning_rate = 0.01
 
     def fonctionActivation(self, x):
-        return np.tanh(x)
+        return np.where(x<0,0,x)
 
     def deriveeActivation(self, x):
-        return 1 - np.tanh(x) ** 2
+        return np.where(x<0,0,1)
 
     def ouvrirImage(self):
         #Cette fonction ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255.
@@ -45,10 +45,11 @@ class ReseauNeurones:
 
         for poids in self.poids:
             z = np.dot(pix, poids) # on multiplie chaque valeur de gris de l'image par les poids
+            zs.append(z)
             pix = self.fonctionActivation(z)
             activation.append(pix)
 
-        return activation
+        return activation[-1]
 
     def backPropag(self, image_matrice, label):
         "cette fonction met à jour les poids du réseau en fonction de l'erreur. Elle prend en entrée l'image et la classification"
@@ -60,6 +61,7 @@ class ReseauNeurones:
 
         # on mesure l'erreur de la dernière couche (activation -1 = dernière sortie - cible *derivée)
         delta = (activations[-1] - cible) * self.deriveeActivation()
+        #delta = (1/m)(activations[-1] - cible)^2
 
         for i in reversed(range(len(self.poids))): # on corrige les couches une par une en partant de la fin
             a_prev = activations[i].reshape(-1, 1) # ce que la couche actuelle a reçu en entrée, mais on met en colonne pour pouvoir faire le produit matriciel
@@ -160,9 +162,10 @@ if __name__=="__main__":
     reseau.initialiserPoids()
 
     # on parcourt toutes les images du test
+    print("Parcours de toutes les images du test...")
     for i, image in enumerate(x_test):
-        sortie = reseau.forwardPropag(image)  # vecteur de 10 valeurs
-        prediction = np.argmax(sortie)  # neurone le plus activé
+        sortie = reseau.forwardPropag(image)[-1]  # vecteur de 10 valeurs
+        prediction = int(sortie > 0)  # neurone le plus activé
         # on affiche seulement les 5 premières images pour ne pas en avoir trop
         if i < 5:
             print(f"Image {i}, nombre réel = {y_test[i]}, prédiction réseau = {prediction}")
