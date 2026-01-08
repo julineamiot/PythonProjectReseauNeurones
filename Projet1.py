@@ -168,4 +168,4 @@ if __name__=="__main__":
         prediction = np.argmax(sortie)  # neurone le plus activé
         # on affiche seulement les 5 premières images pour ne pas en avoir trop
         if i < 5:
-            print(f"Image {i}, label réel = {y_test[i]}, prédiction réseau = {prediction}")
+            print(f"Image {i}, nombre réel = {y_test[i]}, prédiction réseau = {prediction}")
