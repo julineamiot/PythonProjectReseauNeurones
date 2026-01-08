@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
+""" Instructions : le programme doit prendre en entrée une matrice np de taille paramétrable. Le réseau doit avoir une couche d'entrée de la taille de 
+l'image et à la fin on a une sortie. Pour chaque couche, faire produit matriciel entre les indices de la matrice avec poids. 
+Si valeur du neurone inféireur à 0, on renvoie -1, sinon on renvoie 1"""
+
 nbNeuronesCouche = [784, 64, 32, 10] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 10 neurones
 
 class ReseauNeurones:
@@ -13,9 +17,13 @@ class ReseauNeurones:
         self.tailles = nbNeuronesCouche
         self.nbCouches = len(nbNeuronesCouche)
         self.poids = []
+        self.learning_rate = 0.01
 
     def fonctionActivation(self, x):
-        return np.where(x < 0, -1, 1)
+        return np.tanh(x)
+
+    def deriveeActivation(self, x):
+        return 1 - np.tanh(x) ** 2
 
     def ouvrirImage(self):
         #Cette fonction ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255.
@@ -29,44 +37,38 @@ class ReseauNeurones:
             poids = np.random.uniform(-1, 1,(self.tailles[i], self.tailles[i + 1]))
             self.poids.append(poids)
 
-        #self.nbNeuronesCouche[0] = taille_image # taille_image = nombre de pixels total
-        #self.poidsEntree = np.random.random_sample((taille_image, self.nbNeuronesCouche[1]))
-        #self.poidsSortie = np.random.random_sample((self.nbNeuronesCouche[1], 1))
-
     def forwardPropag(self, imageMatrice):
-        # on transforme la matrice de pixels en vecteur
+        # on transforme la matrice de pixels en vecteur, car le réseau ne peut pas lire une image carrée
         pix = imageMatrice.reshape(-1)
+        activation = [pix]
+        zs = [] # pour écrire les résultats intermédiaires juste avant d'appliquer la fonction d'activation => utile pour la backward pour corriger les erreurs
 
         for poids in self.poids:
-            z = np.dot(pix, poids)
+            z = np.dot(pix, poids) # on multiplie chaque valeur de gris de l'image par les poids
             pix = self.fonctionActivation(z)
+            activation.append(pix)
 
-        return pix
+        return activation
 
-        # produit matriciel entrée x couche cachée
-        #z1 = np.dot(pix, self.poidsEntree) #np.dot pour les produits np
-        #a1 = self.fonctionActivation(z1)
-
-        # produit matriciel cachée x sortie
-        #z2 = np.dot(a1, self.poidsSortie)
-        #a2 = self.fonctionActivation(z2)
-
-        #return a2
-
-    def backPropag(self, image_matrice, classif):
+    def backPropag(self, image_matrice, label):
         "cette fonction met à jour les poids du réseau en fonction de l'erreur. Elle prend en entrée l'image et la classification"
         "initale, donc 0 ou 1."
-        pass
+        activations, zs = self.forwardPropag(image_matrice)
 
-    def main(self):
-        "elle gère l'entraînement et les tests du réseau de neurones. Elle appelle forward et backward pour plusieurs images différentes "
-        pass
+        cible = np.zeros(10) # liste de 0 et l'indice label c'est le chiffre souhaité, donc il vaut 1
+        cible[label] = 1
 
+        # on mesure l'erreur de la dernière couche (activation -1 = dernière sortie - cible *derivée)
+        delta = (activations[-1] - cible) * self.deriveeActivation()
 
-"""le porgramme doit orendre en entrée une matrcie numpy de taille paramétrable. Le réseau doit avir une couche d'entrée de la tille de 
-l'image et à la fin on a une sortie. Pour chaque couche, faire produit matriciel entre les indices de la matrice avec poids. 
-Si valeur du neurone inféireur à 0, on renvoie -1, sinon on renvoie 1"""
+        for i in reversed(range(len(self.poids))): # on corrige les couches une par une en partant de la fin
+            a_prev = activations[i].reshape(-1, 1) # ce que la couche actuelle a reçu en entrée, mais on met en colonne pour pouvoir faire le produit matriciel
+            delta = delta.reshape(1, -1)
 
+            correction = self.learning_rate * np.dot(a_prev, delta)
+            self.poids[i] = self.poids[i] - correction
+
+        #pas fini ?
 
 class MnistDataloader(object):
 
@@ -115,9 +117,7 @@ class MnistDataloader(object):
 
 
 # vérifie la lecture du Dataset via la classe MnistDataloader
-
 #Affichage images
-
 # Fonction utilitaire pour afficher une liste d’images avec leurs titres correspondants
 
 def show_images(images, title_texts):
@@ -133,8 +133,6 @@ def show_images(images, title_texts):
         if (title_text != ''):
             plt.title(title_text, fontsize = 15)
         index += 1
-
-
 # charger MINST dataset
 
 
@@ -162,7 +160,6 @@ if __name__=="__main__":
     reseau.initialiserPoids()
 
     # on parcourt toutes les images du test
-    print("Parcours de toutes les images du test...")
     for i, image in enumerate(x_test):
         sortie = reseau.forwardPropag(image)  # vecteur de 10 valeurs
         prediction = np.argmax(sortie)  # neurone le plus activé
