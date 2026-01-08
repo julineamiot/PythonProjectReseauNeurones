@@ -10,7 +10,7 @@ from PIL import Image
 l'image et à la fin on a une sortie. Pour chaque couche, faire produit matriciel entre les indices de la matrice avec poids. 
 Si valeur du neurone inféireur à 0, on renvoie -1, sinon on renvoie 1"""
 
-nbNeuronesCouche = [784, 64, 32, 10] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 10 neurones
+nbNeuronesCouche = [784, 64, 32, 1] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 1 neurone car doit dire si c'est un x ou  pas
 
 class ReseauNeurones:
     def __init__(self, nbNeuronesCouche):
@@ -39,17 +39,16 @@ class ReseauNeurones:
 
     def forwardPropag(self, imageMatrice):
         # on transforme la matrice de pixels en vecteur, car le réseau ne peut pas lire une image carrée
-        pix = imageMatrice.ravel()
+        pix = imageMatrice.reshape(-1)
         activation = [pix]
         zs = [] # pour écrire les résultats intermédiaires juste avant d'appliquer la fonction d'activation => utile pour la backward pour corriger les erreurs
 
         for poids in self.poids:
             z = np.dot(pix, poids) # on multiplie chaque valeur de gris de l'image par les poids
-            zs.append(z) # pour la backward
             pix = self.fonctionActivation(z)
             activation.append(pix)
 
-        return activation, zs
+        return activation
 
     def backPropag(self, imageMatrice, label):
         activations, zs = self.forwardPropag(imageMatrice)
@@ -158,9 +157,10 @@ if __name__=="__main__":
     reseau.initialiserPoids()
 
     # on parcourt toutes les images du test
+    print("Parcours de toutes les images du test...")
     for i, image in enumerate(x_test):
-        sortie = reseau.forwardPropag(image)  # vecteur de 10 valeurs
-        prediction = np.argmax(sortie)  # neurone le plus activé
+        sortie = reseau.forwardPropag(image)[-1]  # vecteur de 10 valeurs
+        prediction = int(sortie > 0)  # neurone le plus activé
         # on affiche seulement les 5 premières images pour ne pas en avoir trop
         if i < 5:
-            print(f"Image {i}, label réel = {y_test[i]}, prédiction réseau = {prediction}")
+            print(f"Image {i}, nombre réel = {y_test[i]}, prédiction réseau = {prediction}")
