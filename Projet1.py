@@ -20,10 +20,10 @@ class ReseauNeurones:
         self.learning_rate = 0.01
 
     def fonctionActivation(self, x):
-        return np.tanh(x)
+        return np.where(x<0, 0, x)
 
     def deriveeActivation(self, x):
-        return 1 - np.tanh(x) ** 2
+        return np.where(x<0, 0, 1)
 
     def ouvrirImage(self):
         #Cette fonction ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255.
@@ -39,42 +39,40 @@ class ReseauNeurones:
 
     def forwardPropag(self, imageMatrice):
         # on transforme la matrice de pixels en vecteur, car le réseau ne peut pas lire une image carrée
-        pix = imageMatrice.reshape(-1)
+        pix = imageMatrice.ravel()
         activation = [pix]
         zs = [] # pour écrire les résultats intermédiaires juste avant d'appliquer la fonction d'activation => utile pour la backward pour corriger les erreurs
 
         for poids in self.poids:
             z = np.dot(pix, poids) # on multiplie chaque valeur de gris de l'image par les poids
+            zs.append(z) # pour la backward
             pix = self.fonctionActivation(z)
             activation.append(pix)
 
-        return activation
+        return activation, zs
 
-    def backPropag(self, image_matrice, label):
-        "cette fonction met à jour les poids du réseau en fonction de l'erreur. Elle prend en entrée l'image et la classification"
-        "initale, donc 0 ou 1."
-        activations, zs = self.forwardPropag(image_matrice)
-
-        cible = np.zeros(10) # liste de 0 et l'indice label c'est le chiffre souhaité, donc il vaut 1
+    def backPropag(self, imageMatrice, label):
+        activations, zs = self.forwardPropag(imageMatrice)
+        cible = np.zeros(10)
         cible[label] = 1
 
-        # on mesure l'erreur de la dernière couche (activation -1 = dernière sortie - cible *derivée)
-        delta = (activations[-1] - cible) * self.deriveeActivation()
+        deltas = [None] * len(self.poids)  # liste des deltas (une par couche de poids)
 
-        for i in reversed(range(len(self.poids))): # on corrige les couches une par une en partant de la fin
-            a_prev = activations[i].reshape(-1, 1) # ce que la couche actuelle a reçu en entrée, mais on met en colonne pour pouvoir faire le produit matriciel
-            delta = delta.reshape(1, -1)
+        deltas[-1] = (activations[-1] - cible) * self.deriveeActivation(zs[-1]) #delta de la couche de sortie
 
-            correction = self.learning_rate * np.dot(a_prev, delta)
-            self.poids[i] = self.poids[i] - correction
+        for l in reversed(range(len(self.poids) - 1)):
+            deltas[l] = np.dot(self.poids[l + 1], deltas[l + 1]) * self.deriveeActivation(zs[l])
 
-        #pas fini ?
+        for l in range(len(self.poids)): # ici on met à jour les poids
+            a = activations[l].reshape(-1, 1)  # activation de la couche l
+            d = deltas[l].reshape(1, -1)  # delta de la couche l+1
+            self.poids[l] -= self.learning_rate * np.dot(a, d)
 
 class MnistDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
         # à changer en fonction de vos chemins d'accès sur vos ordinateurs
-        input_path = "C:/Users/Utilisateur/OneDrive/Documents/Cours/TSE/L3/Programmation, magistère/Projet"
+        input_path = "/Users/julineamiot/PycharmProjects/PythonProjectReseauNeurones"
         training_images_filepath = input_path + "/train-images.idx3-ubyte"
         training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
         test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
