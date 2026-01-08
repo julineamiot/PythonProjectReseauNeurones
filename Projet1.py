@@ -5,6 +5,8 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
+import perceptron
+import toolz
 
 """ Instructions : le programme doit prendre en entrée une matrice np de taille paramétrable. Le réseau doit avoir une couche d'entrée de la taille de 
 l'image et à la fin on a une sortie. Pour chaque couche, faire produit matriciel entre les indices de la matrice avec poids. 
@@ -45,24 +47,31 @@ class ReseauNeurones:
 
         for poids in self.poids:
             z = np.dot(pix, poids) # on multiplie chaque valeur de gris de l'image par les poids
+            zs.append(z)
             pix = self.fonctionActivation(z)
             activation.append(pix)
 
-        return activation[-1]
+        return activation, zs
 
     def backPropag(self, imageMatrice, label):
         activations, zs = self.forwardPropag(imageMatrice)
-        cible = np.zeros(10)
-        cible[label] = 1
+        #cible = np.zeros(10)
+        #cible[label] = 1
+
+        # cible pour un seul neurone de sortie
+        X = 0
+        cible = 1 if label == X else -1  # 1 si c'est le chiffre X, sinon -1
 
         deltas = [None] * len(self.poids)  # liste des deltas (une par couche de poids)
 
         deltas[-1] = (activations[-1] - cible) * self.deriveeActivation(zs[-1]) #delta de la couche de sortie
 
+        #on fait la backward pour les couches cachées
         for l in reversed(range(len(self.poids) - 1)):
             deltas[l] = np.dot(self.poids[l + 1], deltas[l + 1]) * self.deriveeActivation(zs[l])
 
-        for l in range(len(self.poids)): # ici on met à jour les poids
+        #on met à jour les poids
+        for l in range(len(self.poids)):
             a = activations[l].reshape(-1, 1)  # activation de la couche l
             d = deltas[l].reshape(1, -1)  # delta de la couche l+1
             self.poids[l] -= self.learning_rate * np.dot(a, d)
@@ -71,7 +80,7 @@ class MnistDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
         # à changer en fonction de vos chemins d'accès sur vos ordinateurs
-        input_path = "/Users/julineamiot/PycharmProjects/PythonProjectReseauNeurones"
+        input_path = "C:/Users/Utilisateur/OneDrive/Documents/Cours/TSE/L3/Programmation, magistère/Projet"
         training_images_filepath = input_path + "/train-images.idx3-ubyte"
         training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
         test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
@@ -158,9 +167,29 @@ if __name__=="__main__":
 
     # on parcourt toutes les images du test
     print("Parcours de toutes les images du test...")
-    for i, image in enumerate(x_test):
-        sortie = reseau.forwardPropag(image)[-1]  # vecteur de 10 valeurs
-        prediction = int(sortie > 0)  # neurone le plus activé
+    for i, image in enumerate(x_test[:10]): #test sur 10 images
+        activations, zs = reseau.forwardPropag(image) #on récupère activations et valeurs avant activation
+        sortie = activations[-1] #dernière couche (np.array)
+        prediction = int(sortie[0] > 0) #on convertit en 0 ou 1
         # on affiche seulement les 5 premières images pour ne pas en avoir trop
-        if i < 5:
-            print(f"Image {i}, nombre réel = {y_test[i]}, prédiction réseau = {prediction}")
+        print(f"Image {i}, nombre réel = {y_test[i]}, prédiction réseau = {prediction}")
+
+    for i, image in enumerate(x_train[:10]):  # exemple sur 10 images
+        reseau.backPropag(image, y_train[i])
+        print(f"Image {i} traitée via backprop")
+
+
+    #taux de réussite de prédiction du réseau
+    X = 7  #chiffre que le réseau doit détecter
+    correct = 0  #on compte le nb de bonnes prédictions
+    for image, label in zip(x_test, y_test):
+        activations, zs = reseau.forwardPropag(image)
+        sortie = activations[-1][0]
+        prediction = 1 if sortie > 0 else 0  #prédiction du réseau
+        cible = 1 if label == X else 0  #on compare la prédiction avec la vrai valeur
+
+        if prediction == cible:
+            correct += 1
+
+    taux_reussite = correct / len(x_test) * 100
+    print(f"Taux de réussite du réseau pour détecter le chiffre {X} : {taux_reussite:.2f}%")
