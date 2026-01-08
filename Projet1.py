@@ -48,7 +48,7 @@ class ReseauNeurones:
             pix = self.fonctionActivation(z)
             activation.append(pix)
 
-        return activation
+        return activation[-1]
 
     def backPropag(self, imageMatrice, label):
         activations, zs = self.forwardPropag(imageMatrice)
