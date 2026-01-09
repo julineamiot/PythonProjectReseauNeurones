@@ -48,7 +48,7 @@ class ReseauNeurones:
             pix = self.fonctionActivation(z)
             activation.append(pix)
 
-        return activation[-1]
+        return activation
 
     def backPropag(self, imageMatrice, label):
         activations, zs = self.forwardPropag(imageMatrice)
@@ -160,7 +160,10 @@ if __name__=="__main__":
     print("Parcours de toutes les images du test...")
     for i, image in enumerate(x_test):
         sortie = reseau.forwardPropag(image)[-1]  # vecteur de 10 valeurs
-        prediction = int(sortie > 0)  # neurone le plus activé
+        prediction = np.where(sortie > 0, 1, 0) # neurone le plus activé
         # on affiche seulement les 5 premières images pour ne pas en avoir trop
         if i < 5:
             print(f"Image {i}, nombre réel = {y_test[i]}, prédiction réseau = {prediction}")
+
+
+#TOUT DOIT ETRE EN PLACE
