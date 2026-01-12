@@ -5,24 +5,24 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
-import perceptron
-import toolz
 
 """ Instructions : le programme doit prendre en entrée une matrice np de taille paramétrable. Le réseau doit avoir une couche d'entrée de la taille de 
 l'image et à la fin on a une sortie. Pour chaque couche, faire produit matriciel entre les indices de la matrice avec poids. 
 Si valeur du neurone inféireur à 0, on renvoie -1, sinon on renvoie 1"""
 
 nbNeuronesCouche = [784, 64, 32, 1] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 1 neurone car doit dire si c'est un x ou  pas
+X = 0 #chiffre que le programme doit apprendre/reconnaitre
 
 class ReseauNeurones:
     def __init__(self, nbNeuronesCouche):
         self.tailles = nbNeuronesCouche
         self.nbCouches = len(nbNeuronesCouche)
         self.poids = []
-        self.learning_rate = 0.01
+        self.biais = [np.zeros((taille,)) for taille in nbNeuronesCouche[1:]]
+        self.learning_rate = 0.0005
 
     def fonctionActivation(self, x):
-        return np.where(x<0, 0, x)
+        return np.where(x<0, 0, x) #fonctionActivation type relu
 
     def deriveeActivation(self, x):
         return np.where(x<0, 0, 1)
@@ -36,45 +36,51 @@ class ReseauNeurones:
 
     def initialiserPoids(self):
         for i in range(self.nbCouches - 1): #-1 car les poids relient les couches entre elles
-            poids = np.random.uniform(-1, 1,(self.tailles[i], self.tailles[i + 1]))
+            poids = np.random.randn(self.tailles[i], self.tailles[i + 1]) * np.sqrt(2 / self.tailles[i])
+            biais = np.zeros(self.tailles[i + 1])
             self.poids.append(poids)
+            self.biais.append(biais)
 
     def forwardPropag(self, imageMatrice):
         # on transforme la matrice de pixels en vecteur, car le réseau ne peut pas lire une image carrée
-        pix = imageMatrice.reshape(-1)
+        pix = imageMatrice.reshape(-1) / 255.0
         activation = [pix]
         zs = [] # pour écrire les résultats intermédiaires juste avant d'appliquer la fonction d'activation => utile pour la backward pour corriger les erreurs
 
-        for poids in self.poids:
-            z = np.dot(pix, poids) # on multiplie chaque valeur de gris de l'image par les poids
+        for i,poids in enumerate(self.poids):
+            z = np.dot(pix, poids) + self.biais[i] # on multiplie chaque valeur de gris de l'image par les poids et on ajoute le biais
             zs.append(z)
-            pix = self.fonctionActivation(z)
+
+            if i == len(self.poids) - 1:  #pour la dernière couche
+                pix = z #pas d'activation
+
+            else:
+                pix = self.fonctionActivation(z)
+
             activation.append(pix)
 
         return activation
 
     def backPropag(self, imageMatrice, label):
         activations, zs = self.forwardPropag(imageMatrice)
-        #cible = np.zeros(10)
-        #cible[label] = 1
 
         # cible pour un seul neurone de sortie
-        X = 0
-        cible = 1 if label == X else -1  # 1 si c'est le chiffre X, sinon -1
+        cible = 1 if label == X else 0  # 1 si c'est le chiffre X (cf. début programme), sinon 0
 
         deltas = [None] * len(self.poids)  # liste des deltas (une par couche de poids)
 
-        deltas[-1] = (activations[-1] - cible) * self.deriveeActivation(zs[-1]) #delta de la couche de sortie
+        deltas[-1] = activations[-1] - cible #delta de la couche de sortie
 
         #on fait la backward pour les couches cachées
         for l in reversed(range(len(self.poids) - 1)):
-            deltas[l] = np.dot(self.poids[l + 1], deltas[l + 1]) * self.deriveeActivation(zs[l])
+            deltas[l] = np.dot(deltas[l + 1], self.poids[l + 1].T) * self.deriveeActivation(zs[l])
 
         #on met à jour les poids
         for l in range(len(self.poids)):
             a = activations[l].reshape(-1, 1)  # activation de la couche l
             d = deltas[l].reshape(1, -1)  # delta de la couche l+1
             self.poids[l] -= self.learning_rate * np.dot(a, d)
+            self.biais[l] -= self.learning_rate * deltas[l] #on met à jour le biais
 
 class MnistDataloader(object):
 
@@ -174,13 +180,13 @@ if __name__=="__main__":
         # on affiche seulement les 5 premières images pour ne pas en avoir trop
         print(f"Image {i}, nombre réel = {y_test[i]}, prédiction réseau = {prediction}")
 
-    for i, image in enumerate(x_train[:10]):  # exemple sur 10 images
-        reseau.backPropag(image, y_train[i])
-        print(f"Image {i} traitée via backprop")
-
+    for i in range(5): #exemple sur 5 images
+        for image, label in zip(x_train[:5000], y_train[:5000]):
+            reseau.backPropag(image, label)
+            #print(f"Image {i} traitée via backprop")
 
     #taux de réussite de prédiction du réseau
-    X = 7  #chiffre que le réseau doit détecter
+    X = 0  #chiffre que le réseau doit détecter (doit être le même que celui qu'il apprend (cf backPropag))
     correct = 0  #on compte le nb de bonnes prédictions
     for image, label in zip(x_test, y_test):
         activations, zs = reseau.forwardPropag(image)
@@ -193,3 +199,11 @@ if __name__=="__main__":
 
     taux_reussite = correct / len(x_test) * 100
     print(f"Taux de réussite du réseau pour détecter le chiffre {X} : {taux_reussite:.2f}%")
+
+    positifs_predits = 0
+    for image in x_test:
+        sortie = reseau.forwardPropag(image)[0][-1][0]
+        if sortie > 0:
+            positifs_predits += 1
+
+    print("Nombre de prédictions = 1 :", positifs_predits)
