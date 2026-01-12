@@ -197,8 +197,9 @@ if __name__=="__main__":
 
 """explications des modifs
 - tu avais initialisé les biais dans l’init, mais tu les avais réinitialisés après, donc au mieux c’est de laisser une liste vide dans l’init (comme on a l’habitude de la faire) et ensuite de bien définir les biais dans la fonction initialiserPoids
-- dans le programme principal (où on a mis if name = main), on testait avant d’entraîner mais du coup pour que le taux de réussite soit plus élevé il faut que le programme apprenne, donc il faut l’entraîner avant de tester (ie faire la backward avant, et dans tous les cas dans la backward on fait la forward)
-- le taux d’apprentissage est trop petit, du coup le réseau mets du temps à apprendre, il faut l’augmenter un petit peu 
+- dans le programme principal (où on a mis if name = main), on testait avant d’entraîner mais du coup pour que le taux de réussite soit plus élevé il faut que le programme apprenne d'abord, donc il faut l’entraîner avant de tester (ie faire la backward avant, et dans tous les cas dans la backward on fait la forward)
+- le taux d’apprentissage est trop petit, du coup le réseau met du temps à apprendre, il faut l’augmenter un petit peu 
 - la fonction ouvrirImage est mise en commentaire car au final on n’en a pas besoin vu que le prof nous a donné la classe mnistdataloader, c’est avec ces images là que le réseau va apprendre
+- chatgpt m'a dit qu'on pouvait appliquer différentes fonctions d'activations aux couches donc j'ai appliqué la sigmoide à la dernière couche 
 - quelques changements au niveau de la forme, genre des écritures qu’on avait pas vus en cours, j’avais peur que le prof soit pas content parce qu’on a utilisé des trucs bizarres
 et juste là j'ai demandé à chatgpt de faire des modifs pour améliorer le taux de réussite sauf que là le taux de réussite c'est 99% c'est peut etre un peu trop grand mdr"""
