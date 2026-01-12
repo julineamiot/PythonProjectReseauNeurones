@@ -4,35 +4,38 @@ from os.path import join
 import random
 import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image
-
-""" Instructions : le programme doit prendre en entrée une matrice np de taille paramétrable. Le réseau doit avoir une couche d'entrée de la taille de 
-l'image et à la fin on a une sortie. Pour chaque couche, faire produit matriciel entre les indices de la matrice avec poids. 
-Si valeur du neurone inféireur à 0, on renvoie -1, sinon on renvoie 1"""
+#from PIL import Image
 
 nbNeuronesCouche = [784, 64, 32, 1] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 1 neurone car doit dire si c'est un x ou  pas
-X = 0 #chiffre que le programme doit apprendre/reconnaitre
+X = 9 # chiffre que le programme doit apprendre/reconnaitre
 
 class ReseauNeurones:
     def __init__(self, nbNeuronesCouche):
         self.tailles = nbNeuronesCouche
         self.nbCouches = len(nbNeuronesCouche)
         self.poids = []
-        self.biais = [np.zeros((taille,)) for taille in nbNeuronesCouche[1:]]
-        self.learning_rate = 0.0005
+        self.biais = []
+        self.learning_rate = 0.005
 
-    def fonctionActivation(self, x):
-        return np.where(x<0, 0, x) #fonctionActivation type relu
+    def ReLuActivation(self, x):
+        return np.where(x<0, 0, x) # relu
 
-    def deriveeActivation(self, x):
+    def ReLuPrime(self, x):
         return np.where(x<0, 0, 1)
 
-    def ouvrirImage(self):
+    def sigmoideActivation(self, x): # on utilise sigmoide pour la couche de sortie
+        return 1 / (1 + np.exp(-x))
+
+    def sigmoidePrime(self, x):
+        s = self.sigmoideActivation(x)
+        return s * (1 - s)
+
+    """def ouvrirImage(self):
         #Cette fonction ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255.
         image = Image.open("nom de l'image")
         imageGris = image.convert("L")
         imageMatrice = np.asarray(imageGris)
-        return imageMatrice
+        return imageMatrice"""
 
     def initialiserPoids(self):
         for i in range(self.nbCouches - 1): #-1 car les poids relient les couches entre elles
@@ -42,45 +45,43 @@ class ReseauNeurones:
             self.biais.append(biais)
 
     def forwardPropag(self, imageMatrice):
-        # on transforme la matrice de pixels en vecteur, car le réseau ne peut pas lire une image carrée
-        pix = imageMatrice.reshape(-1) / 255.0
-        activation = [pix]
-        zs = [] # pour écrire les résultats intermédiaires juste avant d'appliquer la fonction d'activation => utile pour la backward pour corriger les erreurs
+        pix = imageMatrice.reshape(-1) / 255 # on a des images 28x28 donc on appalatit l'image en vecteur 784 normalisés (ie avec des valeurs proches de 0)
+        activation = [pix] # valeurs après l'activation
+        zs = [] # valeurs avant l'activation (pour la backward)
 
-        for i,poids in enumerate(self.poids):
-            z = np.dot(pix, poids) + self.biais[i] # on multiplie chaque valeur de gris de l'image par les poids et on ajoute le biais
+        for i in range(len(self.poids)):
+            z = np.dot(pix, self.poids[i]) + self.biais[i]
             zs.append(z)
 
-            if i == len(self.poids) - 1:  #pour la dernière couche
-                pix = z #pas d'activation
-
+            if i == len(self.poids) - 1:
+                pix = self.sigmoideActivation(z)
             else:
-                pix = self.fonctionActivation(z)
+                pix = self.ReLuActivation(z)
 
             activation.append(pix)
 
-        return activation
+        return activation, zs
 
     def backPropag(self, imageMatrice, label):
-        activations, zs = self.forwardPropag(imageMatrice)
+        activation, zs = self.forwardPropag(imageMatrice)
 
         # cible pour un seul neurone de sortie
         cible = 1 if label == X else 0  # 1 si c'est le chiffre X (cf. début programme), sinon 0
 
         deltas = [None] * len(self.poids)  # liste des deltas (une par couche de poids)
 
-        deltas[-1] = activations[-1] - cible #delta de la couche de sortie
+        deltas[-1] = activation[-1] - cible # delta (=erreur) de la couche de sortie
 
-        #on fait la backward pour les couches cachées
+        # on fait la backward pour les couches cachées
         for l in reversed(range(len(self.poids) - 1)):
-            deltas[l] = np.dot(deltas[l + 1], self.poids[l + 1].T) * self.deriveeActivation(zs[l])
+            deltas[l] = np.dot(deltas[l + 1], self.poids[l + 1].T) * self.ReLuPrime(zs[l])
 
-        #on met à jour les poids
+        # on met à jour les poids et les biais
         for l in range(len(self.poids)):
-            a = activations[l].reshape(-1, 1)  # activation de la couche l
+            a = activation[l].reshape(-1, 1)  # activation de la couche l
             d = deltas[l].reshape(1, -1)  # delta de la couche l+1
-            self.poids[l] -= self.learning_rate * np.dot(a, d)
-            self.biais[l] -= self.learning_rate * deltas[l] #on met à jour le biais
+            self.poids[l] = self.poids[l] - self.learning_rate * np.dot(a, d)
+            self.biais[l] = self.biais[l] - self.learning_rate * deltas[l] #on met à jour le biais
 
 class MnistDataloader(object):
 
@@ -171,39 +172,33 @@ if __name__=="__main__":
     reseau = ReseauNeurones(nbNeuronesCouche)
     reseau.initialiserPoids()
 
-    # on parcourt toutes les images du test
-    print("Parcours de toutes les images du test...")
-    for i, image in enumerate(x_test[:10]): #test sur 10 images
-        activations, zs = reseau.forwardPropag(image) #on récupère activations et valeurs avant activation
-        sortie = activations[-1] #dernière couche (np.array)
-        prediction = int(sortie[0] > 0) #on convertit en 0 ou 1
-        # on affiche seulement les 5 premières images pour ne pas en avoir trop
-        print(f"Image {i}, nombre réel = {y_test[i]}, prédiction réseau = {prediction}")
-
-    for i in range(5): #exemple sur 5 images
-        for image, label in zip(x_train[:5000], y_train[:5000]):
+    # entraînement
+    print("Entraînement du réseau :")
+    for epoch in range(30):
+        for image, label in zip(x_train[:20000], y_train[:20000]):
             reseau.backPropag(image, label)
-            #print(f"Image {i} traitée via backprop")
 
-    #taux de réussite de prédiction du réseau
-    X = 0  #chiffre que le réseau doit détecter (doit être le même que celui qu'il apprend (cf backPropag))
-    correct = 0  #on compte le nb de bonnes prédictions
+    # test
+    print("\nTest du réseau")
+    correct = 0
+
     for image, label in zip(x_test, y_test):
-        activations, zs = reseau.forwardPropag(image)
+        resultat = reseau.forwardPropag(image)
+        activations = resultat[0]
         sortie = activations[-1][0]
-        prediction = 1 if sortie > 0 else 0  #prédiction du réseau
-        cible = 1 if label == X else 0  #on compare la prédiction avec la vrai valeur
+
+        prediction = 1 if sortie > 0.5 else 0
+        cible = 1 if label == X else 0
 
         if prediction == cible:
-            correct += 1
+            correct = correct + 1
+    tauxReussite = correct / len(x_test) * 100
+    print("Taux de réussite pour détecter le chiffre " + str(X) + " : " + str(tauxReussite) +"%")
 
-    taux_reussite = correct / len(x_test) * 100
-    print(f"Taux de réussite du réseau pour détecter le chiffre {X} : {taux_reussite:.2f}%")
-
-    positifs_predits = 0
-    for image in x_test:
-        sortie = reseau.forwardPropag(image)[0][-1][0]
-        if sortie > 0:
-            positifs_predits += 1
-
-    print("Nombre de prédictions = 1 :", positifs_predits)
+"""explications des modifs
+- tu avais initialisé les biais dans l’init, mais tu les avais réinitialisés après, donc au mieux c’est de laisser une liste vide dans l’init (comme on a l’habitude de la faire) et ensuite de bien définir les biais dans la fonction initialiserPoids
+- dans le programme principal (où on a mis if name = main), on testait avant d’entraîner mais du coup pour que le taux de réussite soit plus élevé il faut que le programme apprenne, donc il faut l’entraîner avant de tester (ie faire la backward avant, et dans tous les cas dans la backward on fait la forward)
+- le taux d’apprentissage est trop petit, du coup le réseau mets du temps à apprendre, il faut l’augmenter un petit peu 
+- la fonction ouvrirImage est mise en commentaire car au final on n’en a pas besoin vu que le prof nous a donné la classe mnistdataloader, c’est avec ces images là que le réseau va apprendre
+- quelques changements au niveau de la forme, genre des écritures qu’on avait pas vus en cours, j’avais peur que le prof soit pas content parce qu’on a utilisé des trucs bizarres
+et juste là j'ai demandé à chatgpt de faire des modifs pour améliorer le taux de réussite sauf que là le taux de réussite c'est 99% c'est peut etre un peu trop grand mdr"""
