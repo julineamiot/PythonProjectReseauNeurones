@@ -18,7 +18,7 @@ class ReseauNeurones:
         self.learning_rate = 0.005
 
     def ReLuActivation(self, x):
-        return np.where(x<0, 0, x) # relu
+        return np.where(x<0, 0, x)
 
     def ReLuPrime(self, x):
         return np.where(x<0, 0, 1)
@@ -87,7 +87,8 @@ class MnistDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
         # à changer en fonction de vos chemins d'accès sur vos ordinateurs
-        input_path = "/Users/julineamiot/PycharmProjects/PythonProjectReseauNeurones"
+        #input_path = "/Users/julineamiot/PycharmProjects/PythonProjectReseauNeurones"
+        input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
         training_images_filepath = input_path + "/train-images.idx3-ubyte"
         training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
         test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
@@ -196,10 +197,15 @@ if __name__=="__main__":
     print("Taux de réussite pour détecter le chiffre " + str(X) + " : " + str(tauxReussite) +"%")
 
 """explications des modifs
-- tu avais initialisé les biais dans l’init, mais tu les avais réinitialisés après, donc au mieux c’est de laisser une liste vide dans l’init (comme on a l’habitude de la faire) et ensuite de bien définir les biais dans la fonction initialiserPoids
-- dans le programme principal (où on a mis if name = main), on testait avant d’entraîner mais du coup pour que le taux de réussite soit plus élevé il faut que le programme apprenne d'abord, donc il faut l’entraîner avant de tester (ie faire la backward avant, et dans tous les cas dans la backward on fait la forward)
+- tu avais initialisé les biais dans l’init, mais tu les avais réinitialisés après, donc au mieux c’est de laisser une liste vide dans 
+l’init (comme on a l’habitude de la faire) et ensuite de bien définir les biais dans la fonction initialiserPoids
+- dans le programme principal (où on a mis if name = main), on testait avant d’entraîner mais du coup pour que le taux de réussite soit 
+plus élevé il faut que le programme apprenne d'abord, donc il faut l’entraîner avant de tester (ie faire la backward avant, et dans tous les 
+cas dans la backward on fait la forward)
 - le taux d’apprentissage est trop petit, du coup le réseau met du temps à apprendre, il faut l’augmenter un petit peu 
-- la fonction ouvrirImage est mise en commentaire car au final on n’en a pas besoin vu que le prof nous a donné la classe mnistdataloader, c’est avec ces images là que le réseau va apprendre
+- la fonction ouvrirImage est mise en commentaire car au final on n’en a pas besoin vu que le prof nous a donné la classe mnistdataloader, 
+c’est avec ces images là que le réseau va apprendre
 - chatgpt m'a dit qu'on pouvait appliquer différentes fonctions d'activations aux couches donc j'ai appliqué la sigmoide à la dernière couche 
-- quelques changements au niveau de la forme, genre des écritures qu’on avait pas vus en cours, j’avais peur que le prof soit pas content parce qu’on a utilisé des trucs bizarres
-et juste là j'ai demandé à chatgpt de faire des modifs pour améliorer le taux de réussite sauf que là le taux de réussite c'est 99% c'est peut etre un peu trop grand mdr"""
+- quelques changements au niveau de la forme, genre des écritures qu’on avait pas vus en cours, j’avais peur que le prof soit pas content 
+parce qu’on a utilisé des trucs bizarres et juste là j'ai demandé à chatgpt de faire des modifs pour améliorer le taux de réussite sauf 
+que là le taux de réussite c'est 99% c'est peut etre un peu trop grand mdr"""
