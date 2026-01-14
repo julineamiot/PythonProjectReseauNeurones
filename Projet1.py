@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 #from PIL import Image
 
-nbNeuronesCouche = [784, 16, 1] #3 couches, 1ere couche 784 neurones, 2e couche 16 neurones, 3e couche 1 neurone car doit dire si c'est un x ou  pas
+nbNeuronesCouche = [784, 16, 1] #3 couches, 1ere couche 784 neurones, 2e couche 16 neurones, 3e couche 1 neurone car doit dire si c'est un x ou pas
 X = 3 # chiffre que le programme doit apprendre/reconnaitre
 
 class ReseauNeurones:
@@ -15,7 +15,7 @@ class ReseauNeurones:
         self.nbCouches = len(nbNeuronesCouche)
         self.poids = []
         self.biais = []
-        self.learning_rate = 0.005
+        self.learning_rate = 0.0005
 
     def ReLuActivation(self, x):
         return np.where(x<0, 0, x)
@@ -39,7 +39,7 @@ class ReseauNeurones:
 
     def initialiserPoids(self):
         for i in range(self.nbCouches - 1): #-1 car les poids relient les couches entre elles
-            poids = np.random.randn(self.tailles[i], self.tailles[i + 1]) * np.sqrt(2 / self.tailles[i])
+            poids = np.random.randn(self.tailles[i], self.tailles[i + 1])
             biais = np.zeros(self.tailles[i + 1])
             self.poids.append(poids)
             self.biais.append(biais)
@@ -174,13 +174,13 @@ if __name__=="__main__":
     reseau.initialiserPoids()
 
     # entraînement
-    print("Entraînement du réseau :")
-    for epoch in range(30):
+    print("Entraînement du réseau")
+    for i in range(30):
         for image, label in zip(x_train[:100], y_train[:100]):
             reseau.backPropag(image, label)
 
     # test
-    print("\nTest du réseau")
+    print("Test du réseau")
     correct = 0
 
     for image, label in zip(x_test, y_test):
