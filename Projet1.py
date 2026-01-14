@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 #from PIL import Image
 
-nbNeuronesCouche = [784, 64, 32, 1] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 1 neurone car doit dire si c'est un x ou  pas
-X = 9 # chiffre que le programme doit apprendre/reconnaitre
+nbNeuronesCouche = [784, 16, 1] #3 couches, 1ere couche 784 neurones, 2e couche 16 neurones, 3e couche 1 neurone car doit dire si c'est un x ou  pas
+X = 3 # chiffre que le programme doit apprendre/reconnaitre
 
 class ReseauNeurones:
     def __init__(self, nbNeuronesCouche):
@@ -87,8 +87,8 @@ class MnistDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
         # à changer en fonction de vos chemins d'accès sur vos ordinateurs
-        #input_path = "/Users/julineamiot/PycharmProjects/PythonProjectReseauNeurones"
-        input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
+        input_path = "/Users/julineamiot/PycharmProjects/PythonProjectReseauNeurones"
+        # input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
         training_images_filepath = input_path + "/train-images.idx3-ubyte"
         training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
         test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
@@ -176,7 +176,7 @@ if __name__=="__main__":
     # entraînement
     print("Entraînement du réseau :")
     for epoch in range(30):
-        for image, label in zip(x_train[:20000], y_train[:20000]):
+        for image, label in zip(x_train[:100], y_train[:100]):
             reseau.backPropag(image, label)
 
     # test
@@ -195,17 +195,3 @@ if __name__=="__main__":
             correct = correct + 1
     tauxReussite = correct / len(x_test) * 100
     print("Taux de réussite pour détecter le chiffre " + str(X) + " : " + str(tauxReussite) +"%")
-
-"""explications des modifs
-- tu avais initialisé les biais dans l’init, mais tu les avais réinitialisés après, donc au mieux c’est de laisser une liste vide dans 
-l’init (comme on a l’habitude de la faire) et ensuite de bien définir les biais dans la fonction initialiserPoids
-- dans le programme principal (où on a mis if name = main), on testait avant d’entraîner mais du coup pour que le taux de réussite soit 
-plus élevé il faut que le programme apprenne d'abord, donc il faut l’entraîner avant de tester (ie faire la backward avant, et dans tous les 
-cas dans la backward on fait la forward)
-- le taux d’apprentissage est trop petit, du coup le réseau met du temps à apprendre, il faut l’augmenter un petit peu 
-- la fonction ouvrirImage est mise en commentaire car au final on n’en a pas besoin vu que le prof nous a donné la classe mnistdataloader, 
-c’est avec ces images là que le réseau va apprendre
-- chatgpt m'a dit qu'on pouvait appliquer différentes fonctions d'activations aux couches donc j'ai appliqué la sigmoide à la dernière couche 
-- quelques changements au niveau de la forme, genre des écritures qu’on avait pas vus en cours, j’avais peur que le prof soit pas content 
-parce qu’on a utilisé des trucs bizarres et juste là j'ai demandé à chatgpt de faire des modifs pour améliorer le taux de réussite sauf 
-que là le taux de réussite c'est 99% c'est peut etre un peu trop grand mdr"""
