@@ -148,56 +148,50 @@ def show_images(images, title_texts):
             plt.title(title_text, fontsize = 15)
         index += 1
 # charger MINST dataset
+
+
 if __name__=="__main__":
     mnist_dataloader = MnistDataloader()
     (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
 
     # Afficher quelques images aléatoires
-        images_2_show = []
-        titles_2_show = []
-        for i in range(0, 10):
-            r = random.randint(1, 60000)
-            images_2_show.append(x_train[r])
-            titles_2_show.append('training image [' + str(r) + '] = ' + str(y_train[r]))
+    images_2_show = []
+    titles_2_show = []
+    for i in range(0, 10):
+        r = random.randint(1, 60000)
+        images_2_show.append(x_train[r])
+        titles_2_show.append('training image [' + str(r) + '] = ' + str(y_train[r]))
 
-        for i in range(0, 5):
-            r = random.randint(1, 10000)
-            images_2_show.append(x_test[r])
-            titles_2_show.append('test image [' + str(r) + '] = ' + str(y_test[r]))
+    for i in range(0, 5):
+        r = random.randint(1, 10000)
+        images_2_show.append(x_test[r])
+        titles_2_show.append('test image [' + str(r) + '] = ' + str(y_test[r]))
 
-        show_images(images_2_show, titles_2_show)
+    show_images(images_2_show, titles_2_show)
 
-        # on initialise le réseau
-        reseau = ReseauNeurones(nbNeuronesCouche)
-        reseau.initialiserPoids()
+    # on initialise le réseau
+    reseau = ReseauNeurones(nbNeuronesCouche)
+    reseau.initialiserPoids()
 
-        # entraînement
-        print("Entraînement du réseau")
-        for i in range(10):
-            for image, label in zip(x_train[:1000], y_train[:1000]):
-                reseau.backPropag(image, label)
+    # entraînement
+    print("Entraînement du réseau")
+    for i in range(30):
+        for image, label in zip(x_train[:100], y_train[:100]):
+            reseau.backPropag(image, label)
 
-        # test
-        print("Test du réseau")
-        correct = 0
+    # test
+    print("Test du réseau")
+    correct = 0
 
-        for image, label in zip(x_test, y_test):
-            resultat = reseau.forwardPropag(image)
-            activations = resultat[0]
-            sortie = activations[-1][0]
+    for image, label in zip(x_test, y_test):
+        resultat = reseau.forwardPropag(image)
+        activations = resultat[0]
+        sortie = activations[-1][0]
 
-            prediction = 1 if sortie > 0.5 else 0
-            cible = 1 if label == X else 0
+        prediction = 1 if sortie > 0.5 else 0
+        cible = 1 if label == X else 0
 
-            if prediction == cible:
-                correct = correct + 1
-        tauxReussite = correct / len(x_test) * 100
-        print("Taux de réussite pour détecter le chiffre " + str(X) + " : " + str(tauxReussite) +"%")
-
-
-    # Performances
-    # tester influence du nb d'entraînements sur la réussite
-    # influence de la variation du taux d'apprentissage
-    # influence du chiffre à reconnaître
-    # 2 autres modifsqui influencent la réussite (ex influence des poids ?)
-    # influence du nombre de couches sur la réussite
+        if prediction == cible:
+            correct = correct + 1
+    tauxReussite = correct / len(x_test) * 100
+    print("Taux de réussite pour détecter le chiffre " + str(X) + " : " + str(tauxReussite) +"%")
