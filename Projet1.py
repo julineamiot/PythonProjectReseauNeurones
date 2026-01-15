@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 #from PIL import Image
 
-nbNeuronesCouche = [784, 16, 1] #3 couches, 1ere couche 784 neurones, 2e couche 16 neurones, 3e couche 1 neurone car doit dire si c'est un x ou pas
-X = 3 # chiffre que le programme doit apprendre/reconnaitre
+nbNeuronesCouche = [784, 64, 32, 1] #3 couches, 1ere couche 784 neurones, 2e couche 16 neurones, 3e couche 1 neurone car doit dire si c'est un x ou pas
+X = 9 #chiffre que le programme doit apprendre/reconnaitre
 
 class ReseauNeurones:
     def __init__(self, nbNeuronesCouche):
@@ -15,7 +15,7 @@ class ReseauNeurones:
         self.nbCouches = len(nbNeuronesCouche)
         self.poids = []
         self.biais = []
-        self.learning_rate = 0.0005
+        self.learning_rate = 0.005
 
     def ReLuActivation(self, x):
         return np.where(x<0, 0, x)
@@ -148,50 +148,56 @@ def show_images(images, title_texts):
             plt.title(title_text, fontsize = 15)
         index += 1
 # charger MINST dataset
-
-
 if __name__=="__main__":
     mnist_dataloader = MnistDataloader()
     (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
 
     # Afficher quelques images aléatoires
-    images_2_show = []
-    titles_2_show = []
-    for i in range(0, 10):
-        r = random.randint(1, 60000)
-        images_2_show.append(x_train[r])
-        titles_2_show.append('training image [' + str(r) + '] = ' + str(y_train[r]))
+        images_2_show = []
+        titles_2_show = []
+        for i in range(0, 10):
+            r = random.randint(1, 60000)
+            images_2_show.append(x_train[r])
+            titles_2_show.append('training image [' + str(r) + '] = ' + str(y_train[r]))
 
-    for i in range(0, 5):
-        r = random.randint(1, 10000)
-        images_2_show.append(x_test[r])
-        titles_2_show.append('test image [' + str(r) + '] = ' + str(y_test[r]))
+        for i in range(0, 5):
+            r = random.randint(1, 10000)
+            images_2_show.append(x_test[r])
+            titles_2_show.append('test image [' + str(r) + '] = ' + str(y_test[r]))
 
-    show_images(images_2_show, titles_2_show)
+        show_images(images_2_show, titles_2_show)
 
-    # on initialise le réseau
-    reseau = ReseauNeurones(nbNeuronesCouche)
-    reseau.initialiserPoids()
+        # on initialise le réseau
+        reseau = ReseauNeurones(nbNeuronesCouche)
+        reseau.initialiserPoids()
 
-    # entraînement
-    print("Entraînement du réseau")
-    for i in range(30):
-        for image, label in zip(x_train[:100], y_train[:100]):
-            reseau.backPropag(image, label)
+        # entraînement
+        print("Entraînement du réseau")
+        for i in range(10):
+            for image, label in zip(x_train[:1000], y_train[:1000]):
+                reseau.backPropag(image, label)
 
-    # test
-    print("Test du réseau")
-    correct = 0
+        # test
+        print("Test du réseau")
+        correct = 0
 
-    for image, label in zip(x_test, y_test):
-        resultat = reseau.forwardPropag(image)
-        activations = resultat[0]
-        sortie = activations[-1][0]
+        for image, label in zip(x_test, y_test):
+            resultat = reseau.forwardPropag(image)
+            activations = resultat[0]
+            sortie = activations[-1][0]
 
-        prediction = 1 if sortie > 0.5 else 0
-        cible = 1 if label == X else 0
+            prediction = 1 if sortie > 0.5 else 0
+            cible = 1 if label == X else 0
 
-        if prediction == cible:
-            correct = correct + 1
-    tauxReussite = correct / len(x_test) * 100
-    print("Taux de réussite pour détecter le chiffre " + str(X) + " : " + str(tauxReussite) +"%")
+            if prediction == cible:
+                correct = correct + 1
+        tauxReussite = correct / len(x_test) * 100
+        print("Taux de réussite pour détecter le chiffre " + str(X) + " : " + str(tauxReussite) +"%")
+
+
+    # Performances
+    # tester influence du nb d'entraînements sur la réussite
+    # influence de la variation du taux d'apprentissage
+    # influence du chiffre à reconnaître
+    # 2 autres modifsqui influencent la réussite (ex influence des poids ?)
+    # influence du nombre de couches sur la réussite
