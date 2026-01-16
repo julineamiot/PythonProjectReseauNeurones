@@ -9,6 +9,8 @@ from PIL import Image
 nbNeuronesCouche = [784, 32, 1] #3 couches, 1ere couche 784 neurones, (2e couche 64 neurones), 3e couche 32 neurones, 4e couche 1 neurone car doit dire si c'est un x ou pas
 X = 3 # chiffre que le programme doit apprendre/reconnaitre
 
+nbNeuronesCouche = []
+
 class ReseauNeurones:
     def __init__(self, nbNeuronesCouche):
         self.tailles = nbNeuronesCouche
