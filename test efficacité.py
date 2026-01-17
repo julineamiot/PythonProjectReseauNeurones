@@ -17,7 +17,7 @@ class ReseauNeurones:
         self.nbCouches = len(nbNeuronesCouche)
         self.poids = []
         self.biais = []
-        self.learning_rate = 0.005
+        self.learning_rate = 0.001
 
     def ReLuActivation(self, x):
         return np.where(x<0, 0, x)
@@ -64,7 +64,7 @@ class ReseauNeurones:
 
         return activation, zs
 
-    def backPropag(self, imageMatrice, label):
+    def backPropag(self, imageMatrice, label,X):
         activation, zs = self.forwardPropag(imageMatrice)
 
         # cible pour un seul neurone de sortie
@@ -153,31 +153,27 @@ def show_images(images, title_texts):
 
 
 
-# variations nb de couches
+if __name__ == "__main__":
 
-for y in range(10):
-    nbCouches = y + 1
+    mnist_dataloader = MnistDataloader()
+    (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
 
-    if nbCouches == 1:
-        liste = [10]  # nb de neuronnes s'il y a qu'une couche
-    else:
-        valeurs_intermediaires = [random.randint(11, 783) for _ in range(nbCouches - 2)]
-        valeurs_intermediaires = sorted(valeurs_intermediaires, reverse=True)  # on trie dans l'odre décroissant
-        liste = [784] + valeurs_intermediaires + [10]
-    nbNeuronesCouche.append(liste)
+    # variations nb de couches
+    for y in range(9):
+        nbCouches = y + 2
 
-    #reseau = ReseauNeurones(liste)
-    #reseau.initialiserPoids()
-
-    # variations chiffres
-    for i in range(10):
-        X = i
+        if nbCouches == 2:
+            liste = [784, 1]  # nb de neuronnes s'il y a qu'une couche
+        else:
+            valeurs_intermediaires = [random.randint(2, 783) for _ in range(nbCouches - 2)]
+            valeurs_intermediaires = sorted(valeurs_intermediaires, reverse=True)  # on trie dans l'odre décroissant
+            liste = [784] + valeurs_intermediaires + [1]
+        nbNeuronesCouche.append(liste)
 
 
-
-        if __name__=="__main__":
-            mnist_dataloader = MnistDataloader()
-            (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
+        # variations chiffres
+        for i in range(10):
+            X = i
 
             # Afficher quelques images aléatoires
             images_2_show = []
@@ -202,11 +198,15 @@ for y in range(10):
             print("Entraînement du réseau")
             for i in range(30):
                 for image, label in zip(x_train[:1000], y_train[:1000]):
-                    reseau.backPropag(image, label)
+                    reseau.backPropag(image, label,X)
 
             # test
             print("Test du réseau")
             correct = 0
+            TauxVraiPositif = 0
+            TauxFauxPositif = 0
+            TauxFauxNégatif = 0
+            TauxVraiNégatif = 0
 
             for image, label in zip(x_test, y_test):
                 resultat = reseau.forwardPropag(image)
@@ -216,7 +216,18 @@ for y in range(10):
                 prediction = 1 if sortie > 0.5 else 0
                 cible = 1 if label == X else 0
 
-                if prediction == cible:
-                    correct = correct + 1
-            tauxReussite = correct / len(x_test) * 100
-            print("Taux de réussite pour détecter le chiffre " + str(X) + "avec un nombre de couche de "+ nbCouches + " : " + str(tauxReussite) +"%")
+                if prediction == 1 and cible == 1:
+                    TauxVraiPositif += 1
+                elif prediction == 1 and cible == 0:
+                    TauxFauxPositif += 1
+                elif prediction == 0 and cible == 1:
+                    TauxFauxNégatif += 1
+                elif prediction == 0 and cible == 0:
+                    TauxVraiNégatif += 1
+
+            precision = TauxVraiPositif / (TauxVraiPositif + TauxFauxPositif) if (TauxVraiPositif + TauxFauxPositif) > 0 else 0
+            rappel = TauxVraiPositif / (TauxVraiPositif + TauxFauxNégatif) if (TauxVraiPositif + TauxFauxNégatif) > 0 else 0
+            f1_score = 2 * (precision * rappel) / (precision + rappel) if (precision + rappel) > 0 else 0
+            tauxReussite = (TauxVraiPositif + TauxVraiNégatif) / len(x_test) * 100  # exact
+
+            print("Taux de réussite pour détecter le chiffre " + str(X) + " avec un nombre de couches de "+ str(nbCouches) + " : " + str(tauxReussite) +"%")
