@@ -231,3 +231,298 @@ if __name__ == "__main__":
             tauxReussite = (TauxVraiPositif + TauxVraiNégatif) / len(x_test) * 100  # exact
 
             print("Taux de réussite pour détecter le chiffre " + str(X) + " avec un nombre de couches de "+ str(nbCouches) + " : " + str(tauxReussite) +"%")
+
+
+
+"""C:\Users\Utilisateur\AppData\Local\Programs\Python\Python313\python.exe "C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py" 
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 0 avec un nombre de couches de 2 : 95.28%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 1 avec un nombre de couches de 2 : 95.66%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 2 avec un nombre de couches de 2 : 91.2%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 3 avec un nombre de couches de 2 : 91.42%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 4 avec un nombre de couches de 2 : 93.30000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 5 avec un nombre de couches de 2 : 87.53999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 6 avec un nombre de couches de 2 : 94.13%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 7 avec un nombre de couches de 2 : 94.45%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 8 avec un nombre de couches de 2 : 88.33%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 9 avec un nombre de couches de 2 : 88.6%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 0 avec un nombre de couches de 3 : 95.86%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 1 avec un nombre de couches de 3 : 96.81%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 2 avec un nombre de couches de 3 : 94.16%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 3 avec un nombre de couches de 3 : 93.37%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 4 avec un nombre de couches de 3 : 93.66%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 5 avec un nombre de couches de 3 : 92.42%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 6 avec un nombre de couches de 3 : 95.39999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 7 avec un nombre de couches de 3 : 94.14%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 8 avec un nombre de couches de 3 : 92.81%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 9 avec un nombre de couches de 3 : 90.16999999999999%
+C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py:142: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`). Consider using `matplotlib.pyplot.close()`.
+  plt.figure(figsize=(30,20))
+Entraînement du réseau
+C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py:29: RuntimeWarning: overflow encountered in exp
+  return 1 / (1 + np.exp(-x))
+Test du réseau
+Taux de réussite pour détecter le chiffre 0 avec un nombre de couches de 4 : 99.08%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 1 avec un nombre de couches de 4 : 99.48%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 2 avec un nombre de couches de 4 : 97.7%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 3 avec un nombre de couches de 4 : 97.21%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 4 avec un nombre de couches de 4 : 98.07000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 5 avec un nombre de couches de 4 : 97.05%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 6 avec un nombre de couches de 4 : 97.72999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 7 avec un nombre de couches de 4 : 97.74000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 8 avec un nombre de couches de 4 : 96.02000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 9 avec un nombre de couches de 4 : 96.63000000000001%
+Entraînement du réseau
+C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py:55: RuntimeWarning: overflow encountered in dot
+  z = np.dot(pix, self.poids[i]) + self.biais[i]
+C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py:55: RuntimeWarning: invalid value encountered in dot
+  z = np.dot(pix, self.poids[i]) + self.biais[i]
+Test du réseau
+Taux de réussite pour détecter le chiffre 0 avec un nombre de couches de 5 : 90.2%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 1 avec un nombre de couches de 5 : 88.64999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 2 avec un nombre de couches de 5 : 89.68%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 3 avec un nombre de couches de 5 : 89.9%
+Entraînement du réseau
+C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py:79: RuntimeWarning: overflow encountered in dot
+  deltas[l] = np.dot(deltas[l + 1], self.poids[l + 1].T) * self.ReLuPrime(zs[l])
+C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py:79: RuntimeWarning: invalid value encountered in multiply
+  deltas[l] = np.dot(deltas[l + 1], self.poids[l + 1].T) * self.ReLuPrime(zs[l])
+C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py:85: RuntimeWarning: invalid value encountered in dot
+  self.poids[l] = self.poids[l] - self.learning_rate * np.dot(a, d)
+C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py:85: RuntimeWarning: overflow encountered in dot
+  self.poids[l] = self.poids[l] - self.learning_rate * np.dot(a, d)
+Test du réseau
+Taux de réussite pour détecter le chiffre 4 avec un nombre de couches de 5 : 90.18%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 5 avec un nombre de couches de 5 : 91.08000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 6 avec un nombre de couches de 5 : 90.42%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 7 avec un nombre de couches de 5 : 89.72%
+Entraînement du réseau
+C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\test efficacité.py:79: RuntimeWarning: invalid value encountered in dot
+  deltas[l] = np.dot(deltas[l + 1], self.poids[l + 1].T) * self.ReLuPrime(zs[l])
+Test du réseau
+Taux de réussite pour détecter le chiffre 8 avec un nombre de couches de 5 : 90.25999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 9 avec un nombre de couches de 5 : 89.91%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 0 avec un nombre de couches de 6 : 90.2%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 1 avec un nombre de couches de 6 : 88.64999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 2 avec un nombre de couches de 6 : 89.68%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 3 avec un nombre de couches de 6 : 89.9%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 4 avec un nombre de couches de 6 : 90.18%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 5 avec un nombre de couches de 6 : 91.08000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 6 avec un nombre de couches de 6 : 90.42%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 7 avec un nombre de couches de 6 : 89.72%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 8 avec un nombre de couches de 6 : 90.25999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 9 avec un nombre de couches de 6 : 89.91%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 0 avec un nombre de couches de 7 : 90.2%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 1 avec un nombre de couches de 7 : 88.64999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 2 avec un nombre de couches de 7 : 89.68%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 3 avec un nombre de couches de 7 : 89.9%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 4 avec un nombre de couches de 7 : 90.18%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 5 avec un nombre de couches de 7 : 91.08000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 6 avec un nombre de couches de 7 : 90.42%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 7 avec un nombre de couches de 7 : 89.72%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 8 avec un nombre de couches de 7 : 90.25999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 9 avec un nombre de couches de 7 : 89.91%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 0 avec un nombre de couches de 8 : 90.2%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 1 avec un nombre de couches de 8 : 88.64999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 2 avec un nombre de couches de 8 : 89.68%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 3 avec un nombre de couches de 8 : 89.9%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 4 avec un nombre de couches de 8 : 90.18%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 5 avec un nombre de couches de 8 : 91.08000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 6 avec un nombre de couches de 8 : 90.42%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 7 avec un nombre de couches de 8 : 89.72%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 8 avec un nombre de couches de 8 : 90.25999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 9 avec un nombre de couches de 8 : 89.91%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 0 avec un nombre de couches de 9 : 90.2%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 1 avec un nombre de couches de 9 : 88.64999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 2 avec un nombre de couches de 9 : 89.68%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 3 avec un nombre de couches de 9 : 89.9%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 4 avec un nombre de couches de 9 : 90.18%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 5 avec un nombre de couches de 9 : 91.08000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 6 avec un nombre de couches de 9 : 90.42%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 7 avec un nombre de couches de 9 : 89.72%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 8 avec un nombre de couches de 9 : 90.25999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 9 avec un nombre de couches de 9 : 89.91%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 0 avec un nombre de couches de 10 : 90.2%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 1 avec un nombre de couches de 10 : 88.64999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 2 avec un nombre de couches de 10 : 89.68%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 3 avec un nombre de couches de 10 : 89.9%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 4 avec un nombre de couches de 10 : 90.18%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 5 avec un nombre de couches de 10 : 91.08000000000001%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 6 avec un nombre de couches de 10 : 90.42%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 7 avec un nombre de couches de 10 : 89.72%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 8 avec un nombre de couches de 10 : 90.25999999999999%
+Entraînement du réseau
+Test du réseau
+Taux de réussite pour détecter le chiffre 9 avec un nombre de couches de 10 : 89.91%
+
+Process finished with exit code 0
+"""
