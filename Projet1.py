@@ -149,7 +149,6 @@ def show_images(images, title_texts):
         index += 1
 # charger MINST dataset
 
-
 if __name__=="__main__":
     mnist_dataloader = MnistDataloader()
     (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
@@ -169,52 +168,29 @@ if __name__=="__main__":
 
     show_images(images_2_show, titles_2_show)
 
-    # paramètres à tester
-    chiffres = [0, 3, 9]
-    architectures = [
-        [784, 1],
-        [784, 32, 1],
-        [784, 64, 32, 1]
-    ]
-    learning_rates = [0.001, 0.005]
-    nb_images_train = [50, 100, 500]
+    # on initialise le réseau
+    reseau = ReseauNeurones(nbNeuronesCouche)
+    reseau.initialiserPoids()
 
-    nb_iter = 20
+    # entraînement
+    print("Entraînement du réseau")
+    for i in range(30):
+        for image, label in zip(x_train[:1000], y_train[:1000]):
+            reseau.backPropag(image, label)
 
-    for X in chiffres:
-        print("Chiffre détecté :", X)
+    # test
+    print("Test du réseau")
+    correct = 0
 
-        for arch in architectures:
-            print("\nArchitecture :", arch)
+    for image, label in zip(x_test, y_test):
+        resultat = reseau.forwardPropag(image)
+        activations = resultat[0]
+        sortie = activations[-1][0]
 
-            for lr in learning_rates:
-                print("Learning rate :", lr)
+        prediction = 1 if sortie > 0.5 else 0
+        cible = 1 if label == X else 0
 
-                for n in nb_images_train:
-                    print("Images d'entraînement :", n)
-
-                    # initialisation du réseau
-                    reseau = ReseauNeurones(arch)
-                    reseau.learning_rate = lr
-                    reseau.initialiserPoids()
-
-                    # entraînement
-                    for epoch in range(nb_epochs):
-                        for image, label in zip(x_train[:n], y_train[:n]):
-                            reseau.backPropag(image, label)
-
-                    # test
-                    correct = 0
-                    for image, label in zip(x_test, y_test):
-                        activations, _ = reseau.forwardPropag(image)
-                        sortie = activations[-1][0]
-
-                        prediction = 1 if sortie > 0.5 else 0
-                        cible = 1 if label == X else 0
-
-                        if prediction == cible:
-                            correct = correct + 1
-
-                    taux = correct / len(x_test) * 100
-
-                    print("→ Taux de réussite :", round(taux, 2), "%")
+        if prediction == cible:
+            correct = correct + 1
+    tauxReussite = correct / len(x_test) * 100
+    print("Taux de réussite pour détecter le chiffre " + str(X) + " : " + str(tauxReussite) +"%")
