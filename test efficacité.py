@@ -203,10 +203,6 @@ if __name__ == "__main__":
             # test
             print("Test du réseau")
             correct = 0
-            TauxVraiPositif = 0
-            TauxFauxPositif = 0
-            TauxFauxNégatif = 0
-            TauxVraiNégatif = 0
 
             for image, label in zip(x_test, y_test):
                 resultat = reseau.forwardPropag(image)
@@ -216,19 +212,9 @@ if __name__ == "__main__":
                 prediction = 1 if sortie > 0.5 else 0
                 cible = 1 if label == X else 0
 
-                if prediction == 1 and cible == 1:
-                    TauxVraiPositif += 1
-                elif prediction == 1 and cible == 0:
-                    TauxFauxPositif += 1
-                elif prediction == 0 and cible == 1:
-                    TauxFauxNégatif += 1
-                elif prediction == 0 and cible == 0:
-                    TauxVraiNégatif += 1
-
-            precision = TauxVraiPositif / (TauxVraiPositif + TauxFauxPositif) if (TauxVraiPositif + TauxFauxPositif) > 0 else 0
-            rappel = TauxVraiPositif / (TauxVraiPositif + TauxFauxNégatif) if (TauxVraiPositif + TauxFauxNégatif) > 0 else 0
-            f1_score = 2 * (precision * rappel) / (precision + rappel) if (precision + rappel) > 0 else 0
-            tauxReussite = (TauxVraiPositif + TauxVraiNégatif) / len(x_test) * 100  # exact
+                if prediction == cible:
+                    correct = correct + 1
+            tauxReussite = correct / len(x_test) * 100
 
             print("Taux de réussite pour détecter le chiffre " + str(X) + " avec un nombre de couches de "+ str(nbCouches) + " : " + str(tauxReussite) +"%")
 
