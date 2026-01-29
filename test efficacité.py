@@ -33,7 +33,7 @@ class ReseauNeurones:
         return s * (1 - s)
 
     """def ouvrirImage(self):
-        #Cette fonction ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255.
+        #ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255
         image = Image.open("nom de l'image")
         imageGris = image.convert("L")
         imageMatrice = np.asarray(imageGris)
