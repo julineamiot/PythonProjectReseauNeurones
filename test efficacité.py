@@ -195,13 +195,13 @@ if __name__ == "__main__":
             reseau.initialiserPoids()
 
             # entraînement
-            print("Entraînement du réseau")
+            #print("Entraînement du réseau")
             for i in range(30):
                 for image, label in zip(x_train[:1000], y_train[:1000]):
                     reseau.backPropag(image, label,X)
 
             # test
-            print("Test du réseau")
+            #print("Test du réseau")
             correct = 0
 
             for image, label in zip(x_test, y_test):
