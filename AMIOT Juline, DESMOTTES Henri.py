@@ -1,3 +1,9 @@
+#Amiot Juline et Desmottes Henri
+
+# lien github
+#https://github.com/julineamiot/PythonProjectReseauNeurones.git
+
+
 import struct
 from array import array
 import random
