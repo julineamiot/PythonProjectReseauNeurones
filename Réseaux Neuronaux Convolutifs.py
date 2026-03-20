@@ -55,13 +55,6 @@ class ReseauNeurones:
             self.poids.append(p)
             self.biais.append(b)
 
-
-    def max_pooling(self, Image_2):
-        pass #renvoie matrice (sortie_pooling) avec comme coeff la valeur max de cahque Image_2
-
-    def dense(self,sortie_pooling):
-        pass #donne un vecteur (vect_dense)
-
     """"def forwardPropag(self, imageMatrice):
         # On aplatit l'image 28x28 en vecteur de 784
         pix = imageMatrice.flatten() / 255.0
