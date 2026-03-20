@@ -94,27 +94,34 @@ class Convolution():
     def __init__(self):
         return None
 
-    def padding(self, image, epaisseur):
+    def separation_couleurs(self, image):
         '''
-        :param image: matrice 2D 28x28
-        :param epaisseur: nb de lignes et de colonnes a rajouter
-        :return:  matrice + grande
+        :param image: une matrice qui va etre divisee en 3 matrices selon la couleur (RBV)
+        :return: une liste de matrices ?
         '''
         return None
 
-    def convolution(self, image, filtre):
+    def padding(self, liste_image, epaisseur):
         '''
+        :param liste_image: les 3 matrices 28x28 de chaque couleur
+        :param epaisseur: nb de lignes et de colonnes a rajouter pour chaque matrice
+        :return: liste de 3 matrices + grandes
+        '''
+        return None
 
-        :param image: matrice 2D 28x28
+    def convolution(self, liste_image, filtre):
+        '''
+        :param liste_image: idem
         :param filtre: matrice 3x3
         à chaque position on multiplie les pixels de l'image par les poids du filtre et on fait la somme
-        :return: matrice de taille plus petite
+        et pour chaque matrice de la liste, on fait la somme des 3 valeurs qu'on a trouvé pour le pixel
+        :return: pour chaque filtre, une matrice plus petite
         '''
         return None
 
-    def relu_convolution(self, matrice_convo):
+    def relu_convolution(self, liste_matrice_convo):
         '''
-        :param matrice_convo: matrice de sortie de la fonction convolution
+        :param liste_matrice_convo: liste de matrices de sortie de la fonction convolution
         si une valeur de la matrice est négative, on met un 0, sinon la valeur reste comme elle est
         :return: matrice de meme taille avec des 0 et des valeurs positive
         '''
@@ -126,6 +133,33 @@ class Convolution():
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
         :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
         '''
+        return None
+
+    def applatir(self, liste_matrice):
+        '''
+        :param liste_matrice: images apres le dernier pooling
+        prendre tous les chiffres de toutes les matrices et les mettre à la suite dans un seul tableau 1D
+        :return: un vecteur une dimension avec toutes les valeurs
+        '''
+        return None
+
+    def dense_layer(self, vecteur_aplatit, poids, biais):
+        '''
+        :param vecteur_aplatit: sortie de la fonction applatir
+        :param poids: matrice de poids de la couche dense
+        :param biais: vecteur de biais
+        on fait la somme pondérée (produit scalaire + biais)
+        :return: vecteur de scores
+        '''
+        return None
+
+    def softmax_final(self, scores):
+        '''
+        :param scores: sortie de la couche dense
+        on transforme les scores en probabilités pour chaque classe
+        :return: vecteur de 10 probabilités
+        '''
+        return None
 
 
 class MnistDataloader(object):
