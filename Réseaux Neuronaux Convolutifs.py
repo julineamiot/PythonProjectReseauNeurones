@@ -107,7 +107,7 @@ class Convolution():
         return None
 
     def padding(self, liste_image, epaisseur):
-        '''
+        ''' 
         :param liste_image: les 3 matrices 28x28 de chaque couleur
         :param epaisseur: nb de lignes et de colonnes a rajouter pour chaque matrice
         :return: liste de 3 matrices + grandes
