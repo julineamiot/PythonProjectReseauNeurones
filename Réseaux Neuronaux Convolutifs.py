@@ -165,7 +165,6 @@ if __name__ == "__main__":
     reseau.initialiserPoids()
 
     # 3. Entraînement (sur un petit échantillon pour tester)
-    print("Début de l'entraînement...")
     for i in range(5):
         for image, label in zip(x_train[:2000], y_train[:2000]):
             reseau.backPropag(image, label)
@@ -182,4 +181,4 @@ if __name__ == "__main__":
         if prediction == label:
             correct += 1
 
-    print("Précision globale :" + str((correct / nb_tests) * 100) + " %")
+    print("Précision globale : " + str((correct / nb_tests) * 100) + "%")
