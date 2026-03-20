@@ -55,7 +55,9 @@ class ReseauNeurones:
             self.poids.append(p)
             self.biais.append(b)
 
-    def forwardPropag(self, imageMatrice):
+
+
+    """def forwardPropag(self, imageMatrice):
         # On aplatit l'image 28x28 en vecteur de 784
         pix = imageMatrice.flatten() / 255.0
         activation = [pix]
@@ -73,9 +75,9 @@ class ReseauNeurones:
                 a = self.ReLuActivation(z)
             activation.append(a)
 
-        return activation, zs
+        return activation, zs"""
 
-    def backPropag(self, imageMatrice, label):
+    """def backPropag(self, imageMatrice, label):
         activation, zs = self.forwardPropag(imageMatrice)
 
         cible = np.zeros(10) # vecteur cible
@@ -93,14 +95,14 @@ class ReseauNeurones:
         for l in range(len(self.poids)):
             # On utilise np.outer pour multiplier le vecteur d'entrée par le vecteur d'erreur
             self.poids[l] -= self.learning_rate * np.outer(activation[l], deltas[l])
-            self.biais[l] -= self.learning_rate * deltas[l]
+            self.biais[l] -= self.learning_rate * deltas[l]"""
 
 class MnistDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
         # à changer en fonction de vos chemins d'accès sur vos ordinateurs
-        input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones"
-        #input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
+        #input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones"
+        input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
         training_images_filepath = input_path + "/train-images.idx3-ubyte"
         training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
         test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
