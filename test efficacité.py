@@ -4,10 +4,10 @@ from os.path import join
 import random
 import matplotlib.pyplot as plt
 import numpy as np
-#from PIL import Image
+from PIL import Image
 
-#nbNeuronesCouche = [784, 32, 1] #3 couches, 1ere couche 784 neurones, (2e couche 64 neurones), 3e couche 32 neurones, 4e couche 1 neurone car doit dire si c'est un x ou pas
-#X = 3 # chiffre que le programme doit apprendre/reconnaitre
+nbNeuronesCouche = [784, 32, 1] #3 couches, 1ere couche 784 neurones, (2e couche 64 neurones), 3e couche 32 neurones, 4e couche 1 neurone car doit dire si c'est un x ou pas
+X = 3 # chiffre que le programme doit apprendre/reconnaitre
 
 nbNeuronesCouche = []
 
@@ -17,7 +17,7 @@ class ReseauNeurones:
         self.nbCouches = len(nbNeuronesCouche)
         self.poids = []
         self.biais = []
-        self.learning_rate = 0.001
+        self.learning_rate = 0.005
 
     def ReLuActivation(self, x):
         return np.where(x<0, 0, x)
@@ -33,7 +33,7 @@ class ReseauNeurones:
         return s * (1 - s)
 
     """def ouvrirImage(self):
-        #Cette fonction ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255.
+        #ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255
         image = Image.open("nom de l'image")
         imageGris = image.convert("L")
         imageMatrice = np.asarray(imageGris)
@@ -89,8 +89,8 @@ class MnistDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
         # à changer en fonction de vos chemins d'accès sur vos ordinateurs
-        #input_path = "/Users/julineamiot/PycharmProjects/PythonProjectReseauNeurones"
-        input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
+        input_path = "/Users/julineamiot/PycharmProjects/PythonProjectReseauNeurones"
+        #input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
         training_images_filepath = input_path + "/train-images.idx3-ubyte"
         training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
         test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
