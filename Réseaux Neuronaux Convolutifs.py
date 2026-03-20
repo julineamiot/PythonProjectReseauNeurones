@@ -55,6 +55,18 @@ class ReseauNeurones:
             self.poids.append(p)
             self.biais.append(b)
 
+    def padding(self, image, epaisseur):
+        # on agrandit la matrice
+        return None
+
+    def convolution(self, image, filtre):
+        # image : matrice 28x28
+        # filtre : matrice 3x3
+        # à chaque position on multiplie les pixels de l'image par les poids du filtre et on fait la somme
+        # sortie : matrice de taille r
+        return None
+
+    def forwardPropag(self, imageMatrice):
 
 
     """def forwardPropag(self, imageMatrice):
