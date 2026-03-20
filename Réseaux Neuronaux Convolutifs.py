@@ -114,10 +114,10 @@ class Convolution():
         '''
         return None
 
-    def convolution(self, liste_image, filtre):
+    def convolution(self, liste_image, liste_filtre):
         '''
         :param liste_image: idem
-        :param filtre: matrice 3x3
+        :param liste_filtre: liste de matrices 3x3
         à chaque position on multiplie les pixels de l'image par les poids du filtre et on fait la somme
         et pour chaque matrice de la liste, on fait la somme des 3 valeurs qu'on a trouvé pour le pixel
         :return: pour chaque filtre, une matrice plus petite
