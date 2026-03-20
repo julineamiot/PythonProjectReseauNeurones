@@ -2,7 +2,7 @@
 on va donc obtenir 4 images différentes selon le filtre appliqué
 normaliser l'image
 multiplier la valeur du pixel par la valeur du filtre
-centrer le filtre et faire addition des multiplications avec biais et obtenir un seul chiffre
+centrer le filtre et faire addition des multiplications et obtenir un seul chiffre
 faire du pading à 0
 le but est d'obtenir des nouveaux paterne sur l'image
 stride :  de combien on décale la matrice de filtre
@@ -99,8 +99,8 @@ class MnistDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
         # à changer en fonction de vos chemins d'accès sur vos ordinateurs
-        #input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones"
-        input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
+        input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones"
+        #input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
         training_images_filepath = input_path + "/train-images.idx3-ubyte"
         training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
         test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
@@ -188,4 +188,4 @@ if __name__ == "__main__":
         if prediction == label:
             correct += 1
 
-    print("Précision globale :" + str((correct / nb_tests) * 100) + " %")
+    print("Précision globale : " + str((correct / nb_tests) * 100) + "%")
