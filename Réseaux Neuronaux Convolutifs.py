@@ -49,16 +49,6 @@ class ReseauNeurones:
             self.poids.append(p)
             self.biais.append(b)
 
-    def padding(self, image, epaisseur):
-        # on agrandit la matrice
-        return None
-
-    def convolution(self, image, filtre):
-        # image : matrice 28x28
-        # filtre : matrice 3x3
-        # à chaque position on multiplie les pixels de l'image par les poids du filtre et on fait la somme
-        # sortie : matrice de taille r
-        return None
 
     def forwardPropag(self, imageMatrice):
         # On aplatit l'image 28x28 en vecteur de 784
@@ -99,6 +89,29 @@ class ReseauNeurones:
             # On utilise np.outer pour multiplier le vecteur d'entrée par le vecteur d'erreur
             self.poids[l] -= self.learning_rate * np.outer(activation[l], deltas[l])
             self.biais[l] -= self.learning_rate * deltas[l]
+
+class Convolution():
+    def __init__(self):
+        return None
+
+    def padding(self, image, epaisseur):
+        # on agrandit la matrice
+        # epaisseur : nb de lignes et de colonnes a rajouter
+        # sortie : matrice + grande
+        return None
+
+    def convolution(self, image, filtre):
+        # image : matrice 28x28
+        # filtre : matrice 3x3
+        # à chaque position on multiplie les pixels de l'image par les poids du filtre et on fait la somme
+        # sortie : matrice de taille r
+        return None
+
+    def relu_convolution(self, matrice_convo):
+        # matrice_convo : matrice de sortie de la fonction convolution
+        # si une valeur de la matrice est négative, on met un 0, sinon la valeur reste comme elle est
+        return None
+
 
 class MnistDataloader(object):
 
