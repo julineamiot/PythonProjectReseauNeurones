@@ -100,22 +100,37 @@ class Convolution():
         return None
 
     def padding(self, image, epaisseur):
-        # on agrandit la matrice
-        # epaisseur : nb de lignes et de colonnes a rajouter
-        # sortie : matrice + grande
+        '''
+        :param image: matrice 2D 28x28
+        :param epaisseur: nb de lignes et de colonnes a rajouter
+        :return:  matrice + grande
+        '''
         return None
 
     def convolution(self, image, filtre):
-        # image : matrice 28x28
-        # filtre : matrice 3x3
-        # à chaque position on multiplie les pixels de l'image par les poids du filtre et on fait la somme
-        # sortie : matrice de taille r
+        '''
+
+        :param image: matrice 2D 28x28
+        :param filtre: matrice 3x3
+        à chaque position on multiplie les pixels de l'image par les poids du filtre et on fait la somme
+        :return: matrice de taille plus petite
+        '''
         return None
 
     def relu_convolution(self, matrice_convo):
-        # matrice_convo : matrice de sortie de la fonction convolution
-        # si une valeur de la matrice est négative, on met un 0, sinon la valeur reste comme elle est
+        '''
+        :param matrice_convo: matrice de sortie de la fonction convolution
+        si une valeur de la matrice est négative, on met un 0, sinon la valeur reste comme elle est
+        :return: matrice de meme taille avec des 0 et des valeurs positive
+        '''
         return None
+
+    def max_pooling(self, matrice_relu, taille):
+        '''
+        :param matrice_relu: matrice apres activation
+        :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
+        :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
+        '''
 
 
 class MnistDataloader(object):
