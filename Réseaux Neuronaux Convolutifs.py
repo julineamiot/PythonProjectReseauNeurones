@@ -110,6 +110,13 @@ class Convolution():
         return None
 
     def convolution(self, liste_image, liste_filtre): # henri
+        taille_hauteur = 28
+        taille_largeur = 28
+        for y in range(taille_largeur):
+            for i in range(taille_hauteur):
+                x = liste_filtre * liste_image
+
+
         '''
         :param liste_image: idem
         :param liste_filtre: liste de matrices 3x3
@@ -128,6 +135,12 @@ class Convolution():
         return None
 
     def max_pooling(self, matrice_relu, taille): #henri
+        taille_matrice_relu = len(matrice_relu)
+        nb_nouvelle_matrice = taille_matrice_relu/taille
+        for i in range(nb_nouvelle_matrice):
+
+
+
         '''
         :param matrice_relu: matrice apres activation
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
@@ -151,7 +164,8 @@ class Convolution():
         on fait la somme pondérée (produit scalaire + biais)
         :return: vecteur de scores
         '''
-        return None
+        score = np.dot(vecteur_aplatit,poids)+biais
+        return score
 
     def softmax_final(self, scores): #juline
         '''
