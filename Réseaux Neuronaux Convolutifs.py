@@ -71,7 +71,7 @@ class ReseauNeurones:
             else:
                 # Couches cachées ReLU
                 a = self.ReLuActivation(z)
-            activation.append(a)
+            activation.append(a) 
 
         return activation, zs"""
 
