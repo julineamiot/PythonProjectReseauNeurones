@@ -73,9 +73,11 @@ class Convolution():
         si une valeur de la matrice est négative, on met un 0, sinon la valeur reste comme elle est
         :return: liste de matrices de meme taille avec des 0 et des valeurs positive
         '''
-        for i in range(len(liste_matrice_convo)):
-            z = np.where(liste_matrice_convo[i] < 0, 0, 1)
-        return z
+        liste_relu = []
+        for matrice in liste_matrice_convo:
+            z = np.maximum(0, matrice)
+            liste_relu.append(z)
+        return liste_relu
 
     def max_pooling(self, matrice_relu, taille): #henri
         '''
@@ -210,7 +212,7 @@ if __name__ == "__main__":
     (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
 
     # 2. Initialiser le réseau
-    reseau = ReseauNeurones(nbNeuronesCouche)
+    reseau = None
     reseau.initialiserPoids()
 
     # 3. Entraînement (sur un petit échantillon pour tester)
