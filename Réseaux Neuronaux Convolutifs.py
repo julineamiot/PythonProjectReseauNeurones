@@ -94,14 +94,14 @@ class Convolution():
     def __init__(self):
         return None
 
-    def separation_couleurs(self, image):
+    def separation_couleurs(self, image): #henri
         '''
         :param image: une matrice qui va etre divisee en 3 matrices selon la couleur (RBV)
         :return: une liste de matrices ?
         '''
         return None
 
-    def padding(self, liste_image, epaisseur):
+    def padding(self, liste_image, epaisseur): #juline
         '''
         :param liste_image: les 3 matrices 28x28 de chaque couleur
         :param epaisseur: nb de lignes et de colonnes a rajouter pour chaque matrice
@@ -109,7 +109,7 @@ class Convolution():
         '''
         return None
 
-    def convolution(self, liste_image, liste_filtre):
+    def convolution(self, liste_image, liste_filtre): # henri
         '''
         :param liste_image: idem
         :param liste_filtre: liste de matrices 3x3
@@ -119,7 +119,7 @@ class Convolution():
         '''
         return None
 
-    def relu_convolution(self, liste_matrice_convo):
+    def relu_convolution(self, liste_matrice_convo): #juline
         '''
         :param liste_matrice_convo: liste de matrices de sortie de la fonction convolution
         si une valeur de la matrice est négative, on met un 0, sinon la valeur reste comme elle est
@@ -127,7 +127,7 @@ class Convolution():
         '''
         return None
 
-    def max_pooling(self, matrice_relu, taille):
+    def max_pooling(self, matrice_relu, taille): #henri
         '''
         :param matrice_relu: matrice apres activation
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
@@ -135,7 +135,7 @@ class Convolution():
         '''
         return None
 
-    def applatir(self, liste_matrice):
+    def applatir(self, liste_matrice):#juline
         '''
         :param liste_matrice: images apres le dernier pooling
         prendre tous les chiffres de toutes les matrices et les mettre à la suite dans un seul tableau 1D
@@ -143,7 +143,7 @@ class Convolution():
         '''
         return None
 
-    def dense_layer(self, vecteur_aplatit, poids, biais):
+    def dense_layer(self, vecteur_aplatit, poids, biais): #henri
         '''
         :param vecteur_aplatit: sortie de la fonction applatir
         :param poids: matrice de poids de la couche dense
@@ -153,7 +153,7 @@ class Convolution():
         '''
         return None
 
-    def softmax_final(self, scores):
+    def softmax_final(self, scores): #juline
         '''
         :param scores: sortie de la couche dense
         on transforme les scores en probabilités pour chaque classe
