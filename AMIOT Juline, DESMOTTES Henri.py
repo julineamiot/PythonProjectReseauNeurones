@@ -198,3 +198,77 @@ if __name__=="__main__":
             correct = correct + 1
     tauxReussite = correct / len(x_test) * 100
     print("Taux de réussite pour détecter le chiffre " + str(X) + " : " + str(tauxReussite) +"%")
+
+
+
+    """ Version Reseau de neurones copiée collée du fichier CNN
+    # Pour reconnaître tous les chiffres, on met 10 neurones en sortie
+    nbNeuronesCouche = [784, 64, 10]
+    learning_rate = 0.01
+
+
+    class ReseauNeurones:
+        def __init__(self, nbNeuronesCouche):
+            self.tailles = nbNeuronesCouche
+            self.nbCouches = len(nbNeuronesCouche)
+            self.poids = []
+            self.biais = []
+            self.learning_rate = learning_rate
+
+        def ReLuActivation(self, x):
+            return np.maximum(0, x)
+
+        def ReLuPrime(self, x):
+            return np.where(x < 0, 0, 1)
+
+        def softmax(self, z):
+            exp_z = np.exp(z - np.max(z))
+            return exp_z / exp_z.sum()
+
+        def initialiserPoids(self):
+            for i in range(self.nbCouches - 1):
+                p = np.random.randn(self.tailles[i], self.tailles[i + 1]) * np.sqrt(2 / self.tailles[i])
+                b = np.zeros(self.tailles[i + 1])
+                self.poids.append(p)
+                self.biais.append(b)
+
+
+        def forwardPropag(self, imageMatrice):
+            # On aplatit l'image 28x28 en vecteur de 784
+            pix = imageMatrice.flatten() / 255.0
+            activation = [pix]
+            zs = []
+
+            for i in range(len(self.poids)):
+                z = np.dot(activation[-1], self.poids[i]) + self.biais[i]
+                zs.append(z)
+
+                if i == len(self.poids) - 1:
+                    # Dernière couche Softmax
+                    a = self.softmax(z)
+                else:
+                    # Couches cachées ReLU
+                    a = self.ReLuActivation(z)
+                activation.append(a)
+
+            return activation, zs
+
+        def backPropag(self, imageMatrice, label):
+            activation, zs = self.forwardPropag(imageMatrice)
+
+            cible = np.zeros(10) # vecteur cible
+            cible[label] = 1
+
+            deltas = [None] * len(self.poids)
+
+            deltas[-1] = activation[-1] - cible
+
+            # Rétropropagation de l'erreur
+            for l in reversed(range(len(self.poids) - 1)):
+                deltas[l] = np.dot(deltas[l + 1], self.poids[l + 1].T) * self.ReLuPrime(zs[l])
+
+            # Mise à jour des poids et biais
+            for l in range(len(self.poids)):
+                # On utilise np.outer pour multiplier le vecteur d'entrée par le vecteur d'erreur
+                self.poids[l] -= self.learning_rate * np.outer(activation[l], deltas[l])
+                self.biais[l] -= self.learning_rate * deltas[l]"""
