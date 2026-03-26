@@ -11,7 +11,9 @@ permet de compresser le nb dinformations à connaitre
 pooling : réduire l'information et résumer l'information (moyenne, + grande valeur)
 dense : mettre toutes les info en un veteur (si beaucoup d'image on peut faire 2 fois cette étape) le nb de dense correspond au nb de neurones que l'on doit avoir en sortie
 pour éviter le sur apprentissage, on peut tourner, flouter l'image
-carte de saillance : dire que l'on a beaucoup utiliser pour détecter l'objet"""
+carte de saillance : dire que l'on a beaucoup utiliser pour détecter l'objet
+
+elements modifiés pendant la backwardpropag : les poids et les biais, à la fois ceux de la convolution et ceux des couches fully connected """
 
 import struct
 from array import array
@@ -169,97 +171,12 @@ class Backward():
 
 
 
-class MnistDataloader(object):
-
-    def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
-        # à changer en fonction de vos chemins d'accès sur vos ordinateurs
-        #input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones"
-        input_path = r"C:\Users\Utilisateur\OneDrive\Documents\Cours\TSE\L3\Programmation, magistère\Projet"
-        training_images_filepath = input_path + "/train-images.idx3-ubyte"
-        training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
-        test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
-        test_labels_filepath = input_path + "/t10k-labels.idx1-ubyte"
-
-
-        self.training_images_filepath = training_images_filepath
-        self.training_labels_filepath = training_labels_filepath
-        self.test_images_filepath = test_images_filepath
-        self.test_labels_filepath = test_labels_filepath
-
-    def read_images_labels(self, images_filepath, labels_filepath):
-        labels = []
-        with open(labels_filepath, 'rb') as file:
-            magic, size = struct.unpack(">II", file.read(8))
-            if magic != 2049:
-                raise ValueError('Magic number mismatch, expected 2049, got {}'.format(magic))
-            labels = array("B", file.read())
-
-        with open(images_filepath, 'rb') as file:
-            magic, size, rows, cols = struct.unpack(">IIII", file.read(16))
-            if magic != 2051:
-                raise ValueError('Magic number mismatch, expected 2051, got {}'.format(magic))
-            image_data = array("B", file.read())
-        images = []
-        for i in range(size):
-            img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols]).reshape(rows, cols)
-            images.append(img)
-        for i in range(size):
-            img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols])
-            img = img.reshape(28, 28)
-            images[i][:] = img
-
-        return images, labels
-
-    def load_data(self):
-        x_train, y_train = self.read_images_labels(self.training_images_filepath, self.training_labels_filepath)
-        x_test, y_test = self.read_images_labels(self.test_images_filepath, self.test_labels_filepath)
-        return (x_train, y_train), (x_test, y_test)
-
-
-# vérifie la lecture du Dataset via la classe MnistDataloader
-#Affichage images
-# Fonction utilitaire pour afficher une liste d’images avec leurs titres correspondants
-
-def show_images(images, title_texts):
-    cols = 5
-    rows = int(len(images)/cols) + 1
-    plt.figure(figsize=(30,20))
-    index = 1
-    for x in zip(images, title_texts):
-        image = x[0]
-        title_text = x[1]
-        plt.subplot(rows, cols, index)
-        plt.imshow(image, cmap=plt.cm.gray)
-        if (title_text != ''):
-            plt.title(title_text, fontsize = 15)
-        index += 1
-# charger MINST dataset
-
+#début de main
 if __name__ == "__main__":
-    # 1. Charger les données (assure-toi que tes fichiers sont au bon endroit)
-    mnist_dataloader = MnistDataloader()
-    (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
+    mon_reseau = Convolution()
 
-    # 2. Initialiser le réseau
-    reseau = None
-    reseau.initialiserPoids()
-
-    # 3. Entraînement (sur un petit échantillon pour tester)
-    #print("Début de l'entraînement...")
-    for i in range(5):
-        for image, label in zip(x_train[:2000], y_train[:2000]):
-            reseau.backPropag(image, label)
-
-    # 4. Test final
-    correct = 0
-    nb_tests = 1000
-
-    for image, label in zip(x_test[:nb_tests], y_test[:nb_tests]):
-        activations, _ = reseau.forwardPropag(image)
-        # La prédiction est l'indice du neurone qui a le plus gros score
-        prediction = np.argmax(activations[-1])
-
-        if prediction == label:
-            correct += 1
-
-    print("Précision globale : " + str((correct / nb_tests) * 100) + "%")
+    img_rgb = mon_reseau.separation_couleurs("image")#quon devra ouvrir)
+    img_pad = mon_reseau.padding(img_rgb, 1)
+    images_filtrees = mon_reseau.convolution(img_pad, mes_filtres)
+    images_activees = mon_reseau.relu_convolution(images_filtrees)
+    # ainsi de suite jusqu'au softmax.
