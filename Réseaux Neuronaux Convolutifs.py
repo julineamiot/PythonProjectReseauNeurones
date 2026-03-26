@@ -130,7 +130,11 @@ class Convolution():
         on transforme les scores en probabilités pour chaque classe
         :return: vecteur de 10 probabilités
         '''
-        return None
+        for i in range(len(scores)):
+            exp_scores = np.exp(scores[i])
+            probas = exp_scores / np.sum(exp_scores)
+        return probas
+
 
 
 class MnistDataloader(object):
