@@ -19,7 +19,7 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Pour reconnaître tous les chiffres, on met 10 neurones en sortie
+"""# Pour reconnaître tous les chiffres, on met 10 neurones en sortie
 nbNeuronesCouche = [784, 64, 10]
 learning_rate = 0.01
 
@@ -88,7 +88,7 @@ class ReseauNeurones:
         for l in range(len(self.poids)):
             # On utilise np.outer pour multiplier le vecteur d'entrée par le vecteur d'erreur
             self.poids[l] -= self.learning_rate * np.outer(activation[l], deltas[l])
-            self.biais[l] -= self.learning_rate * deltas[l]
+            self.biais[l] -= self.learning_rate * deltas[l]"""
 
 class Convolution():
     def __init__(self):
@@ -107,9 +107,15 @@ class Convolution():
         :param epaisseur: nb de lignes et de colonnes a rajouter pour chaque matrice
         :return: liste de 3 matrices + grandes
         '''
-        return None
+        liste_resultat = []
+        for img in liste_image:
+            h, w = img.shape
+            img_padding = np.zeros((h + 2 * epaisseur, w + 2 * epaisseur))
+            img_padding[epaisseur: h + epaisseur, epaisseur: w + epaisseur] = img
+            liste_resultat.append(img_padding)
+        return liste_resultat
 
-    def convolution(self, liste_image, liste_filtre): # henri
+    def convolution(self, liste_image, liste_filtre): # henri, juline
         '''
         :param liste_image: idem
         :param liste_filtre: liste de matrices 3x3
@@ -123,9 +129,11 @@ class Convolution():
         '''
         :param liste_matrice_convo: liste de matrices de sortie de la fonction convolution
         si une valeur de la matrice est négative, on met un 0, sinon la valeur reste comme elle est
-        :return: matrice de meme taille avec des 0 et des valeurs positive
+        :return: liste de matrices de meme taille avec des 0 et des valeurs positive
         '''
-        return None
+        for i in range(len(liste_matrice_convo)):
+            z = np.where(liste_matrice_convo[i] < 0, 0, 1)
+        return z
 
     def max_pooling(self, matrice_relu, taille): #henri
         '''
@@ -135,13 +143,15 @@ class Convolution():
         '''
         return None
 
-    def applatir(self, liste_matrice):#juline
+    def applatir(self, liste_matrice): #juline
         '''
         :param liste_matrice: images apres le dernier pooling
         prendre tous les chiffres de toutes les matrices et les mettre à la suite dans un seul tableau 1D
         :return: un vecteur une dimension avec toutes les valeurs
         '''
-        return None
+        for i in range(len(liste_matrice)):
+            x=liste_matrice[i]
+            for j in range
 
     def dense_layer(self, vecteur_aplatit, poids, biais): #henri
         '''
