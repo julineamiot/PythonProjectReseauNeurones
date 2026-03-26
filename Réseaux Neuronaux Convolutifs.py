@@ -8,16 +8,10 @@ le but est d'obtenir des nouveaux paterne sur l'image
 stride :  de combien on décale la matrice de filtre
 le réseau de neuronne va apprendre les chiffres qui sont dans le filtre
 permet de compresser le nb dinformations à connaitre
-après la convolution il y a une fonction d'activation de type Relu (appliqué sur chaque éléments de sortie de la convolution)
-pooling : réduire l'information et résumer l'information (Average Pooling = moyenne, + Max Pooling = grande valeur (c'est le + utilisé))
-Flatten : on doit mettre en ligne toutes les infos pour que la phase dense puisse les utiliser
+pooling : réduire l'information et résumer l'information (moyenne, + grande valeur)
 dense : mettre toutes les info en un veteur (si beaucoup d'image on peut faire 2 fois cette étape) le nb de dense correspond au nb de neurones que l'on doit avoir en sortie
-pour éviter le sur apprentissage (= Overfitting), on peut tourner, flouter l'image
-carte de saillance : dire que l'on a beaucoup utiliser pour détecter l'objet (repose sur le calcul du gradient)
-
-1ere couche 64 neurones puis 128 pour les suivantes
-
-(convolution => activation (Relu) => pooling) * (x fois) => dense => prediction"""
+pour éviter le sur apprentissage, on peut tourner, flouter l'image
+carte de saillance : dire que l'on a beaucoup utiliser pour détecter l'objet"""
 
 import struct
 from array import array
@@ -55,7 +49,8 @@ class ReseauNeurones:
             self.poids.append(p)
             self.biais.append(b)
 
-    """"def forwardPropag(self, imageMatrice):
+
+    def forwardPropag(self, imageMatrice):
         # On aplatit l'image 28x28 en vecteur de 784
         pix = imageMatrice.flatten() / 255.0
         activation = [pix]
@@ -71,11 +66,11 @@ class ReseauNeurones:
             else:
                 # Couches cachées ReLU
                 a = self.ReLuActivation(z)
-            activation.append(a) 
+            activation.append(a)
 
-        return activation, zs"""
+        return activation, zs
 
-    """def backPropag(self, imageMatrice, label):
+    def backPropag(self, imageMatrice, label):
         activation, zs = self.forwardPropag(imageMatrice)
 
         cible = np.zeros(10) # vecteur cible
@@ -93,28 +88,28 @@ class ReseauNeurones:
         for l in range(len(self.poids)):
             # On utilise np.outer pour multiplier le vecteur d'entrée par le vecteur d'erreur
             self.poids[l] -= self.learning_rate * np.outer(activation[l], deltas[l])
-            self.biais[l] -= self.learning_rate * deltas[l]"""
+            self.biais[l] -= self.learning_rate * deltas[l]
 
 class Convolution():
     def __init__(self):
         return None
 
-    def separation_couleurs(self, image):
+    def separation_couleurs(self, image): #henri
         '''
         :param image: une matrice qui va etre divisee en 3 matrices selon la couleur (RBV)
         :return: une liste de matrices ?
         '''
         return None
 
-    def padding(self, liste_image, epaisseur):
-        ''' 
+    def padding(self, liste_image, epaisseur): #juline
+        '''
         :param liste_image: les 3 matrices 28x28 de chaque couleur
         :param epaisseur: nb de lignes et de colonnes a rajouter pour chaque matrice
         :return: liste de 3 matrices + grandes
         '''
         return None
 
-    def convolution(self, liste_image, liste_filtre):
+    def convolution(self, liste_image, liste_filtre): # henri
         '''
         :param liste_image: idem
         :param liste_filtre: liste de matrices 3x3
@@ -124,7 +119,7 @@ class Convolution():
         '''
         return None
 
-    def relu_convolution(self, liste_matrice_convo):
+    def relu_convolution(self, liste_matrice_convo): #juline
         '''
         :param liste_matrice_convo: liste de matrices de sortie de la fonction convolution
         si une valeur de la matrice est négative, on met un 0, sinon la valeur reste comme elle est
@@ -132,7 +127,7 @@ class Convolution():
         '''
         return None
 
-    def max_pooling(self, matrice_relu, taille):
+    def max_pooling(self, matrice_relu, taille): #henri
         '''
         :param matrice_relu: matrice apres activation
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
@@ -140,7 +135,7 @@ class Convolution():
         '''
         return None
 
-    def applatir(self, liste_matrice):
+    def applatir(self, liste_matrice):#juline
         '''
         :param liste_matrice: images apres le dernier pooling
         prendre tous les chiffres de toutes les matrices et les mettre à la suite dans un seul tableau 1D
@@ -148,7 +143,7 @@ class Convolution():
         '''
         return None
 
-    def dense_layer(self, vecteur_aplatit, poids, biais):
+    def dense_layer(self, vecteur_aplatit, poids, biais): #henri
         '''
         :param vecteur_aplatit: sortie de la fonction applatir
         :param poids: matrice de poids de la couche dense
@@ -158,7 +153,7 @@ class Convolution():
         '''
         return None
 
-    def softmax_final(self, scores):
+    def softmax_final(self, scores): #juline
         '''
         :param scores: sortie de la couche dense
         on transforme les scores en probabilités pour chaque classe
