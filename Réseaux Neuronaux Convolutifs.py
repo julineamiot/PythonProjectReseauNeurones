@@ -54,32 +54,28 @@ class Convolution():
             liste_resultat.append(img_padding)
         return liste_resultat
 
-    def convolution(self, liste_image, liste_filtre):
+    def convolution(self, liste_image_pad, liste_filtre):
         '''
-        :param liste_image: [matrice_R, matrice_V, matrice_B]
-        :param liste_filtre: Liste de filtres (chaque filtre est une matrice 3x3)
+        :param liste_image_pad: [R, G, B] en 30x30
+        :param liste_filtre: liste de filtres (chaque filtre est 3x3)
         '''
-        resultats_filtres = []
-        h, l = liste_image[0].shape  #taille de l'image
+        resultats_tous_filtres = []
+        h, l = liste_image_pad[0].shape
 
         for filtre in liste_filtre:
-            matrice_sortie = np.zeros((h - 2 , l - 2)) # On crée une matrice vide pour stocker le résultat de ce filtre
+            matrice_sortie_filtre = np.zeros((h - 2, l - 2))
+
             for i in range(h - 2):
                 for j in range(l - 2):
-                    somme_canaux = 0
-                    # On fait le calcul pour chaque couleur (R, V, B)
-                    for canal in liste_image:
-                        # On découpe la zone 3x3
-                        zone = canal[i:i + 3, j:j + 3]
-                        # Multiplication et somme
-                        somme_canaux += np.sum(zone * filtre)
+                    pixel_final = 0
+                    for canal_couleur in liste_image_pad:
+                        zone = canal_couleur[i:i + 3, j:j + 3]
+                        pixel_final = pixel_final + np.sum(zone * filtre)
 
-                    # On enregistre le résultat final pour ce pixel
-                    matrice_sortie[i, j] = somme_canaux
+                    matrice_sortie_filtre[i, j] = pixel_final
 
-            resultats_filtres.append(matrice_sortie)
-
-        return resultats_filtres
+            resultats_tous_filtres.append(matrice_sortie_filtre)
+        return resultats_tous_filtres
 
     def relu_convolution(self, liste_matrice_convo): #juline
         '''
@@ -127,7 +123,7 @@ class Convolution():
         for matrice in liste_matrice:
             ligne = matrice.flatten()
             vecteur_apla.extend(ligne) # pour ajouter éléments par éléments, pas la liste entière
-            x = np.array(vecteur_apla) # conversion array pour les fonctions suivantes
+        x = np.array(vecteur_apla) # conversion array pour les fonctions suivantes
         return x
 
     def dense_layer(self, vecteur_aplatit, poids, biais): #henri
@@ -168,9 +164,6 @@ class Backward():
         return None
 
 
-
-
-
 #début de main
 if __name__ == "__main__":
     mon_reseau = Convolution()
@@ -179,4 +172,4 @@ if __name__ == "__main__":
     img_pad = mon_reseau.padding(img_rgb, 1)
     images_filtrees = mon_reseau.convolution(img_pad, mes_filtres)
     images_activees = mon_reseau.relu_convolution(images_filtrees)
-    # ainsi de suite jusqu'au softmax.
+    # ainsi de suite jusqu'au softmax
