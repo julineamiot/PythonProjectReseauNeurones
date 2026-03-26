@@ -18,6 +18,7 @@ from array import array
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image as Img
 
 class Convolution():
     def __init__(self):
@@ -26,9 +27,16 @@ class Convolution():
     def separation_couleurs(self, image): #henri
         '''
         :param image: une matrice qui va etre divisee en 3 matrices selon la couleur (RBV)
-        :return: une liste de matrices ?
+        :return: une liste de matrices selon la couleur
         '''
-        return None
+        image = Img.open("l'image qu'on veut")
+        ref_img_r, ref_img_g, ref_img_b = image.split()
+        matrice_r = np.array(ref_img_r)
+        matrice_g = np.array(ref_img_g)
+        matrice_b = np.array(ref_img_b)
+        liste_couleurs = [matrice_r, matrice_g, matrice_b]
+        return liste_couleurs
+
 
     def padding(self, liste_image, epaisseur): #juline
         '''
@@ -45,13 +53,6 @@ class Convolution():
         return liste_resultat
 
     def convolution(self, liste_image, liste_filtre): # henri
-        taille_hauteur = 28
-        taille_largeur = 28
-        for y in range(taille_largeur):
-            for i in range(taille_hauteur):
-                x = liste_filtre * liste_image
-
-
         '''
         :param liste_image: idem
         :param liste_filtre: liste de matrices 3x3
@@ -59,6 +60,11 @@ class Convolution():
         et pour chaque matrice de la liste, on fait la somme des 3 valeurs qu'on a trouvé pour le pixel
         :return: pour chaque filtre, une matrice plus petite
         '''
+        taille_hauteur = 28
+        taille_largeur = 28
+        for y in range(taille_largeur):
+            for i in range(taille_hauteur):
+                x = liste_filtre * liste_image
         return None
 
     def relu_convolution(self, liste_matrice_convo): #juline
@@ -88,9 +94,12 @@ class Convolution():
         prendre tous les chiffres de toutes les matrices et les mettre à la suite dans un seul tableau 1D
         :return: un vecteur une dimension avec toutes les valeurs
         '''
-        for i in range(len(liste_matrice)):
-            x=liste_matrice[i]
-            for j in range 
+        vecteur_apla = []
+        for matrice in liste_matrice:
+            ligne = matrice.flatten()
+            vecteur_apla.extend(ligne) # pour ajouter éléments par éléments, pas la liste entière
+            x = np.array(vecteur_apla) # conversion array pour les fonctions suivantes
+        return x
 
     def dense_layer(self, vecteur_aplatit, poids, biais): #henri
         '''
