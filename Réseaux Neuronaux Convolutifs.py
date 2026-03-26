@@ -52,20 +52,32 @@ class Convolution():
             liste_resultat.append(img_padding)
         return liste_resultat
 
-    def convolution(self, liste_image, liste_filtre): # henri
+    def convolution(self, liste_image, liste_filtre):
         '''
-        :param liste_image: idem
-        :param liste_filtre: liste de matrices 3x3
-        à chaque position on multiplie les pixels de l'image par les poids du filtre et on fait la somme
-        et pour chaque matrice de la liste, on fait la somme des 3 valeurs qu'on a trouvé pour le pixel
-        :return: pour chaque filtre, une matrice plus petite
+        :param liste_image: [matrice_R, matrice_V, matrice_B]
+        :param liste_filtre: Liste de filtres (chaque filtre est une matrice 3x3)
         '''
-        taille_hauteur = 28
-        taille_largeur = 28
-        for y in range(taille_largeur):
-            for i in range(taille_hauteur):
-                x = liste_filtre * liste_image
-        return None
+        resultats_filtres = []
+        h, l = liste_image[0].shape  #taille de l'image
+
+        for filtre in liste_filtre:
+            matrice_sortie = np.zeros((h - 2 , l - 2)) # On crée une matrice vide pour stocker le résultat de ce filtre
+            for i in range(h - 2):
+                for j in range(l - 2):
+                    somme_canaux = 0
+                    # On fait le calcul pour chaque couleur (R, V, B)
+                    for canal in liste_image:
+                        # On découpe la zone 3x3
+                        zone = canal[i:i + 3, j:j + 3]
+                        # Multiplication et somme
+                        somme_canaux += np.sum(zone * filtre)
+
+                    # On enregistre le résultat final pour ce pixel
+                    matrice_sortie[i, j] = somme_canaux
+
+            resultats_filtres.append(matrice_sortie)
+
+        return resultats_filtres
 
     def relu_convolution(self, liste_matrice_convo): #juline
         '''
@@ -79,28 +91,31 @@ class Convolution():
             liste_relu.append(z)
         return liste_relu
 
-    def max_pooling(self, matrice_relu, taille): #henri
+    def max_pooling(self, liste_relu, taille): #henri
         '''
         :param matrice_relu: matrice apres activation
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
         :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
         '''
-        (largeur_matrice_relu, longueur_matrice_relu) = matrice_relu.shape
-        nouveau_taille_matrice_hauteur = largeur_matrice_relu //taille[0]
-        nouveau_taille_matrice_largeur = longueur_matrice_relu // taille[1]
+        liste_matrice_reduite = []
 
-        nouvelle_matrice = np.empty((nouveau_taille_matrice_hauteur,nouveau_taille_matrice_largeur))
-        liste_matrice = []
+        for matrice_relu in liste_relu:  # On traite chaque filtre un par un
+            (largeur_matrice_relu, longueur_matrice_relu) = matrice_relu.shape
+            nouveau_taille_matrice_hauteur = largeur_matrice_relu //taille[0]
+            nouveau_taille_matrice_largeur = longueur_matrice_relu // taille[1]
 
-        for j in range(nouveau_taille_matrice_hauteur):
-            for i in range(nouveau_taille_matrice_largeur):
-                #on définit la zone en multipliant l'indice par la taille du pool
-                #pour décaler la fenêtre de sélection sans chevauchement
-                zone_pooling = matrice_relu[j*taille[0] : (j+1)*taille[0], i*taille[1] : (i+1)*taille[1]]
-                max_valeur = np.max(zone_pooling)
-                nouvelle_matrice[j, i] = max_valeur #la nouvelle matrice prend ka valeur max dans la ligne j et colonne i
+            nouvelle_matrice = np.empty((nouveau_taille_matrice_hauteur,nouveau_taille_matrice_largeur))
+            liste_matrice = []
 
-        liste_matrice.append(nouvelle_matrice)
+            for j in range(nouveau_taille_matrice_hauteur):
+                for i in range(nouveau_taille_matrice_largeur):
+                    #on définit la zone en multipliant l'indice par la taille du pool
+                    #pour décaler la fenêtre de sélection sans chevauchement
+                    zone_pooling = matrice_relu[j*taille[0] : (j+1)*taille[0], i*taille[1] : (i+1)*taille[1]]
+                    max_valeur = np.max(zone_pooling)
+                    nouvelle_matrice[j, i] = max_valeur #la nouvelle matrice prend ka valeur max dans la ligne j et colonne i
+
+            liste_matrice.append(nouvelle_matrice)
         return liste_matrice
 
     def applatir(self, liste_matrice): #juline
