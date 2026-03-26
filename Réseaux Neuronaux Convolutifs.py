@@ -56,6 +56,7 @@ class Convolution():
         '''
         :param liste_image: [matrice_R, matrice_V, matrice_B]
         :param liste_filtre: Liste de filtres (chaque filtre est une matrice 3x3)
+        :return: resultats_filtres
         '''
         resultats_filtres = []
         h, l = liste_image[0].shape  #taille de l'image
@@ -106,11 +107,19 @@ class Convolution():
 
             nouvelle_matrice = np.zeros((nouveau_h, nouveau_l))
 
+            matrice_position_max = np.zeros((nouveau_h, nouveau_l))
+
             for j in range(nouveau_h):
                 for i in range(nouveau_l):
                     # j*taille[0] pour sauter de 2 en 2 pour ne pas chevaucher
                     zone_pooling = matrice_relu[j * taille[0]: (j + 1) * taille[0], i * taille[1]: (i + 1) * taille[1]]
                     nouvelle_matrice[j, i] = np.max(zone_pooling)
+
+                    indice_plat = np.argmax(zone_pooling) #chaque coordonnée est nomée de 1 à 4
+                    coordonnées = np.unravel_index(indice_plat, zone_pooling.shape) #on trouve sa position au sein de la matrice (2x2) sur laquelle on applique le pooling
+                    position_hauteur_du_max = j * taille[0] + coordonnées[0] #on trouve sa position au sein de la matrice
+                    position_largeur_du_max = i * taille[1] + coordonnées[1]
+                    matrice_position_max[position_hauteur_du_max,position_largeur_du_max] = 1
 
             liste_matrice_reduite.append(nouvelle_matrice)
         return liste_matrice_reduite
