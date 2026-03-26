@@ -143,18 +143,27 @@ class Convolution():
         return z
 
     def max_pooling(self, matrice_relu, taille): #henri
-        taille_matrice_relu = len(matrice_relu)
-        nb_nouvelle_matrice = taille_matrice_relu/taille
-        for i in range(nb_nouvelle_matrice):
-
-
-
         '''
         :param matrice_relu: matrice apres activation
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
         :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
         '''
-        return None
+        (largeur_matrice_relu, longueur_matrice_relu) = matrice_relu.shape
+        taille_matrice_relu = (largeur_matrice_relu, longueur_matrice_relu)
+        nouveau_taille_matrice_hauteur = taille_matrice_relu/taille[0]
+        nouveau_taille_matrice_largeur = taille_matrice_relu / taille[1]
+        nouvelle_matrice = np.empty((nouveau_taille_matrice_hauteur,nouveau_taille_matrice_largeur))
+        liste_matrice = []
+        for j in range(nouveau_taille_matrice_hauteur)
+            for i in range(nouveau_taille_matrice_largeur):
+                nouvelle_matrice_1 = []
+                max_valeur = max(nouvelle_matrice_1)
+                vecteur_ligne = np.append(max_valeur)
+
+            nouvelle_matrice = np.vstack([vecteur_ligne])
+
+        liste_matrice.append(nouvelle_matrice)
+        return liste_matrice
 
     def applatir(self, liste_matrice): #juline
         '''
@@ -164,7 +173,7 @@ class Convolution():
         '''
         for i in range(len(liste_matrice)):
             x=liste_matrice[i]
-            for j in range 
+            for j in range
 
     def dense_layer(self, vecteur_aplatit, poids, biais): #henri
         '''
