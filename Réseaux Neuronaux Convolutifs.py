@@ -29,6 +29,7 @@ class Convolution():
         :param image: une matrice qui va etre divisee en 3 matrices selon la couleur (RBV)
         :return: une liste de matrices selon la couleur
         '''
+        image = Img.open("l'image qu'on veut")
         ref_img_r, ref_img_g, ref_img_b = image.split()
         matrice_r = np.array(ref_img_r)
         matrice_g = np.array(ref_img_g)
@@ -60,7 +61,7 @@ class Convolution():
         h, l = liste_image[0].shape  #taille de l'image
 
         for filtre in liste_filtre:
-            matrice_sortie = np.zeros((h - 2 , l - 2)) # matrice vide pour stocker le résultat du filtre
+            matrice_sortie = np.zeros((h - 2 , l - 2)) # On crée une matrice vide pour stocker le résultat de ce filtre
             for i in range(h - 2):
                 for j in range(l - 2):
                     somme_canaux = 0
@@ -147,6 +148,24 @@ class Convolution():
         exp_scores = np.exp(scores)
         probas = exp_scores / np.sum(exp_scores)
         return probas
+
+class Backward():
+    def __init__(self):
+        return None
+
+    def back_dense(self):
+        return None
+
+    def unfmatten(self): #backward applatir
+        return None
+
+    def back_pooling(self):
+        return None
+
+    def convolution(self):
+        return None
+
+
 
 
 
