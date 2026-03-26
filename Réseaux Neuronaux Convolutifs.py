@@ -164,7 +164,7 @@ class Convolution():
         '''
         for i in range(len(liste_matrice)):
             x=liste_matrice[i]
-            for j in range
+            for j in range 
 
     def dense_layer(self, vecteur_aplatit, poids, biais): #henri
         '''
