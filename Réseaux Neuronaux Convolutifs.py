@@ -97,7 +97,7 @@ class Convolution():
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
         :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
         '''
-        liste_matrice_reduite = []
+        liste_matrice = []
 
         for matrice_relu in liste_relu:  # On traite chaque filtre un par un
             (largeur_matrice_relu, longueur_matrice_relu) = matrice_relu.shape
@@ -105,7 +105,6 @@ class Convolution():
             nouveau_taille_matrice_largeur = longueur_matrice_relu // taille[1]
 
             nouvelle_matrice = np.empty((nouveau_taille_matrice_hauteur,nouveau_taille_matrice_largeur))
-            liste_matrice = []
 
             for j in range(nouveau_taille_matrice_hauteur):
                 for i in range(nouveau_taille_matrice_largeur):
@@ -151,6 +150,24 @@ class Convolution():
         exp_scores = np.exp(scores)
         probas = exp_scores / np.sum(exp_scores)
         return probas
+
+class Backward():
+    def __init__(self):
+        return None
+
+    def back_dense(self):
+        return None
+
+    def unfmatten(self): #backward applatir
+        return None
+
+    def back_pooling(self):
+        return None
+
+    def convolution(self):
+        return None
+
+
 
 
 
