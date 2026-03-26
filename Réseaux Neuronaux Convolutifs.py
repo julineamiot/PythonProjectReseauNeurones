@@ -84,18 +84,19 @@ class Convolution():
         :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
         '''
         (largeur_matrice_relu, longueur_matrice_relu) = matrice_relu.shape
-        taille_matrice_relu = (largeur_matrice_relu, longueur_matrice_relu)
-        nouveau_taille_matrice_hauteur = taille_matrice_relu/taille[0]
-        nouveau_taille_matrice_largeur = taille_matrice_relu / taille[1]
+        nouveau_taille_matrice_hauteur = largeur_matrice_relu //taille[0]
+        nouveau_taille_matrice_largeur = longueur_matrice_relu // taille[1]
+
         nouvelle_matrice = np.empty((nouveau_taille_matrice_hauteur,nouveau_taille_matrice_largeur))
         liste_matrice = []
-        for j in range(nouveau_taille_matrice_hauteur)
-            for i in range(nouveau_taille_matrice_largeur):
-                nouvelle_matrice_1 = []
-                max_valeur = max(nouvelle_matrice_1)
-                vecteur_ligne = np.append(max_valeur)
 
-            nouvelle_matrice = np.vstack([vecteur_ligne])
+        for j in range(nouveau_taille_matrice_hauteur):
+            for i in range(nouveau_taille_matrice_largeur):
+                #on définit la zone en multipliant l'indice par la taille du pool
+                #pour décaler la fenêtre de sélection sans chevauchement
+                zone_pooling = matrice_relu[j*taille[0] : (j+1)*taille[0], i*taille[1] : (i+1)*taille[1]]
+                max_valeur = np.max(zone_pooling)
+                nouvelle_matrice[j, i] = max_valeur #la nouvelle matrice prend ka valeur max dans la ligne j et colonne i
 
         liste_matrice.append(nouvelle_matrice)
         return liste_matrice
