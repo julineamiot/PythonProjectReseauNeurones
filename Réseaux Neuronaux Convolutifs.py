@@ -23,24 +23,25 @@ import numpy as np
 from PIL import Image as Img
 
 class Convolution():
-    def __init__(self):
-        return None
+    def __init__(self, epaisseur_padding=1, taille_pooling=(2,2)):
+        self.epaisseur_padding = epaisseur_padding
+        self.taille_pooling = taille_pooling
+        self.filtres = [np.random.randn(3,3) for _ in range(4)]
 
     def separation_couleurs(self, image): #henri
         '''
         :param image: une matrice qui va etre divisee en 3 matrices selon la couleur (RBV)
         :return: une liste de matrices selon la couleur
         '''
-        image = Img.open("l'image qu'on veut")
         ref_img_r, ref_img_g, ref_img_b = image.split()
-        matrice_r = np.array(ref_img_r)
-        matrice_g = np.array(ref_img_g)
-        matrice_b = np.array(ref_img_b)
+        matrice_r = np.array(ref_img_r) / 255 # division pour normaliser
+        matrice_g = np.array(ref_img_g) / 255
+        matrice_b = np.array(ref_img_b) / 255
         liste_couleurs = [matrice_r, matrice_g, matrice_b]
         return liste_couleurs
 
 
-    def padding(self, liste_image, epaisseur): #juline
+    def padding(self, liste_image): #juline
         '''
         :param liste_image: les 3 matrices 28x28 de chaque couleur
         :param epaisseur: nb de lignes et de colonnes a rajouter pour chaque matrice
@@ -49,8 +50,9 @@ class Convolution():
         liste_resultat = []
         for img in liste_image:
             h, w = img.shape
-            img_padding = np.zeros((h + 2 * epaisseur, w + 2 * epaisseur))
-            img_padding[epaisseur: h + epaisseur, epaisseur: w + epaisseur] = img
+            img_padding = np.zeros((h + 2 * self.epaisseur_padding, w + 2 * self.epaisseur_padding))
+            e = self.epaisseur_padding
+            img_padding[e: h + e, e : w + e] = img
             liste_resultat.append(img_padding)
         return liste_resultat
 
@@ -62,7 +64,7 @@ class Convolution():
         resultats_tous_filtres = []
         h, l = liste_image_pad[0].shape
 
-        for filtre in liste_filtre:
+        for filtre in self.filtres:
             matrice_sortie_filtre = np.zeros((h - 2, l - 2))
 
             for i in range(h - 2):
@@ -89,26 +91,28 @@ class Convolution():
             liste_relu.append(z)
         return liste_relu
 
-    def max_pooling(self, liste_relu, taille): #henri
+    def max_pooling(self, liste_relu): #henri
         '''
         :param matrice_relu: matrice apres activation
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
         :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
         '''
         liste_matrice_reduite = []
+        i, j = self.taille_pooling
+
         for matrice_relu in liste_relu:
             h, l = matrice_relu.shape
 
-            nouveau_h = h // taille[0]
-            nouveau_l = l // taille[1]
+            nouveau_h = h // i
+            nouveau_l = l // j
 
             nouvelle_matrice = np.zeros((nouveau_h, nouveau_l))
 
-            for j in range(nouveau_h):
-                for i in range(nouveau_l):
+            for y in range(nouveau_h):
+                for x in range(nouveau_l):
                     # j*taille[0] pour sauter de 2 en 2 pour ne pas chevaucher
-                    zone_pooling = matrice_relu[j * taille[0]: (j + 1) * taille[0], i * taille[1]: (i + 1) * taille[1]]
-                    nouvelle_matrice[j, i] = np.max(zone_pooling)
+                    zone_pooling = matrice_relu[y * i : (y + 1) * h, x * j : (x + 1) * j]
+                    nouvelle_matrice[y, x] = np.max(zone_pooling)
 
             liste_matrice_reduite.append(nouvelle_matrice)
         return liste_matrice_reduite
@@ -126,16 +130,16 @@ class Convolution():
         x = np.array(vecteur_apla) # conversion array pour les fonctions suivantes
         return x
 
-    def dense_layer(self, vecteur_aplatit, poids, biais): #henri
-        '''
-        :param vecteur_aplatit: sortie de la fonction applatir
-        :param poids: matrice de poids de la couche dense
-        :param biais: vecteur de biais
-        on fait la somme pondérée (produit scalaire + biais)
-        :return: vecteur de scores
-        '''
-        score = np.dot(vecteur_aplatit,poids)+biais
-        return score
+
+class ReseauNeurones():
+    def __init__(self, tailles):
+        self.tailles = tailles
+        self.poids = []
+        self.biais = []
+        self.learning_rate = 0.005
+        for i in range(len(tailles) - 1):
+            self.poids.append(np.random.randn(tailles[i], tailles[i + 1]) * 0.1)
+            self.biais.append(np.zeros(tailles[i + 1]))
 
     def softmax_final(self, scores): #juline
         '''
@@ -147,7 +151,46 @@ class Convolution():
         probas = exp_scores / np.sum(exp_scores)
         return probas
 
-class Backward():
+    def dense_forward(self, vecteur_entree): #henri
+        '''
+        :param vecteur_entree: sortie de la fonction applatir
+        on fait la somme pondérée (produit scalaire + biais)
+        :return: vecteur de scores
+        '''
+        activation=[vecteur_entree]
+        zs=[]
+        pix=vecteur_entree
+
+        for i in range(len(self.poids)):
+            z=np.dot(pix, self.poids[i]) + self.biais[i]
+            zs.append(z)
+
+            if i == len (self.poids) - 1:
+                pix = self.softmax_final(z)
+            else:
+                pix=np.maximum(0,z)
+            activation.append(pix)
+        return activation, zs
+
+    def backwardPropag(self, vecteur_entree, label):
+        activation, zs = self.dense_forward(vecteur_entree)
+
+        cible=np.zeros(10)
+        cible[label]=1
+        deltas=[None] * len(self.poids)
+        deltas[-1]=activation[-1] - cible
+
+        for l in reversed(range(len(self.poids)-1)):
+            relu_prime=np.where(zs[l]<0,0,1)
+            deltas[l]=np.dot(deltas[l+1], self.poids[l+1].T) * relu_prime
+
+        for l in range(len(self.poids)):
+            a = activation[l].reshape(-1, 1)
+            d = deltas[l].reshape(1, -1)
+            self.poids[l] = self.poids[l] - self.learning_rate * np.dot(a, d)
+            self.biais[l] = self.biais[l] - self.learning_rate * deltas[l]
+
+class BackwardCNN():
     def __init__(self):
         return None
 
@@ -166,10 +209,18 @@ class Backward():
 
 #début de main
 if __name__ == "__main__":
-    mon_reseau = Convolution()
+    reseau_cnn = Convolution(epaisseur_padding=1, taille_pooling=(2, 2))
+    img=Img.open("l'image").resize((28,28))
 
-    img_rgb = mon_reseau.separation_couleurs("image")#quon devra ouvrir)
-    img_pad = mon_reseau.padding(img_rgb, 1)
-    images_filtrees = mon_reseau.convolution(img_pad, mes_filtres)
-    images_activees = mon_reseau.relu_convolution(images_filtrees)
-    # ainsi de suite jusqu'au softmax
+    # forward
+    # partie convolution
+    rgb = reseau_cnn.separation_couleurs(img)
+    padding = reseau_cnn.padding(rgb)
+    convolu = reseau_cnn.convolution(padding)
+    activation = reseau_cnn.relu_convolution(convolu)
+    pooling = reseau_cnn.max_pooling(activation)
+    vecteur_final = reseau_cnn.applatir(pooling)
+
+    # partie reseau de neurones simple
+    reseau_simple = ReseauNeurones() # a modif
+    resultat = reseau_simple.forwardPropag(vecteur_entree, poids, biais) # adapter

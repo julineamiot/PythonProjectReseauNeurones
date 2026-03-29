@@ -10,7 +10,7 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 
-nbNeuronesCouche = [784, 64, 32, 1] #4 couches, 1ere couche 784 neurones, 2e couche 64 neurones, 3e couche 32 neurones, 4e couche 1 neurone car doit dire si c'est un x ou pas
+nbNeuronesCouche = [784, 64, 32, 10]
 X = 5 # chiffre que le programme doit apprendre/reconnaitre
 
 class ReseauNeurones:
