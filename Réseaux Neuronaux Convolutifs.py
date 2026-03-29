@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image as Img
 
-class Convolution():
+class ForwardCNN():
     def __init__(self, epaisseur_padding=1, taille_pooling=(2,2)):
         self.epaisseur_padding = epaisseur_padding
         self.taille_pooling = taille_pooling
@@ -56,7 +56,7 @@ class Convolution():
             liste_resultat.append(img_padding)
         return liste_resultat
 
-    def convolution(self, liste_image_pad, liste_filtre):
+    def convolution(self, liste_image_pad):
         '''
         :param liste_image_pad: [R, G, B] en 30x30
         :param liste_filtre: liste de filtres (chaque filtre est 3x3)
@@ -111,7 +111,7 @@ class Convolution():
             for y in range(nouveau_h):
                 for x in range(nouveau_l):
                     # j*taille[0] pour sauter de 2 en 2 pour ne pas chevaucher
-                    zone_pooling = matrice_relu[y * i : (y + 1) * h, x * j : (x + 1) * j]
+                    zone_pooling = matrice_relu[y * i : (y + 1) * i, x * j : (x + 1) * j]
                     nouvelle_matrice[y, x] = np.max(zone_pooling)
 
             liste_matrice_reduite.append(nouvelle_matrice)
@@ -130,6 +130,21 @@ class Convolution():
         x = np.array(vecteur_apla) # conversion array pour les fonctions suivantes
         return x
 
+class BackwardCNN():
+    def __init__(self):
+        return None
+
+    def back_dense(self):
+        return None
+
+    def unfmatten(self): #backward applatir
+        return None
+
+    def back_pooling(self):
+        return None
+
+    def convolution(self):
+        return None
 
 class ReseauNeurones():
     def __init__(self, tailles):
@@ -151,7 +166,7 @@ class ReseauNeurones():
         probas = exp_scores / np.sum(exp_scores)
         return probas
 
-    def dense_forward(self, vecteur_entree): #henri
+    def forwardPropag(self, vecteur_entree): #henri
         '''
         :param vecteur_entree: sortie de la fonction applatir
         on fait la somme pondérée (produit scalaire + biais)
@@ -173,7 +188,7 @@ class ReseauNeurones():
         return activation, zs
 
     def backwardPropag(self, vecteur_entree, label):
-        activation, zs = self.dense_forward(vecteur_entree)
+        activation, zs = self.forwardPropag(vecteur_entree)
 
         cible=np.zeros(10)
         cible[label]=1
@@ -190,26 +205,10 @@ class ReseauNeurones():
             self.poids[l] = self.poids[l] - self.learning_rate * np.dot(a, d)
             self.biais[l] = self.biais[l] - self.learning_rate * deltas[l]
 
-class BackwardCNN():
-    def __init__(self):
-        return None
-
-    def back_dense(self):
-        return None
-
-    def unfmatten(self): #backward applatir
-        return None
-
-    def back_pooling(self):
-        return None
-
-    def convolution(self):
-        return None
-
 
 #début de main
 if __name__ == "__main__":
-    reseau_cnn = Convolution(epaisseur_padding=1, taille_pooling=(2, 2))
+    reseau_cnn = ForwardCNN(epaisseur_padding=1, taille_pooling=(2, 2))
     img=Img.open("l'image").resize((28,28))
 
     # forward
@@ -222,5 +221,6 @@ if __name__ == "__main__":
     vecteur_final = reseau_cnn.applatir(pooling)
 
     # partie reseau de neurones simple
-    reseau_simple = ReseauNeurones() # a modif
-    resultat = reseau_simple.forwardPropag(vecteur_entree, poids, biais) # adapter
+    tailles = [784, 64, 10]
+    reseau_simple = ReseauNeurones(tailles)
+    resultat = reseau_simple.forwardPropag(vecteur_final)
