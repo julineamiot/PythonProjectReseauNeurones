@@ -169,6 +169,8 @@ class BackwardCNN():
     def convolution(self):
         return None
 
+
+
 class ReseauNeurones():
     def __init__(self, tailles):
         self.tailles = tailles
@@ -227,6 +229,56 @@ class ReseauNeurones():
             d = deltas[l].reshape(1, -1)
             self.poids[l] = self.poids[l] - self.learning_rate * np.dot(a, d)
             self.biais[l] = self.biais[l] - self.learning_rate * deltas[l]
+
+
+
+class MnistDataloader(object):
+
+    def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
+        # à changer en fonction de vos chemins d'accès sur vos ordinateurs
+        #input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones"
+        input_path = r"C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones"
+
+        training_images_filepath = input_path + "/train-images.idx3-ubyte"
+        training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
+        test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
+        test_labels_filepath = input_path + "/t10k-labels.idx1-ubyte"
+
+
+        self.training_images_filepath = training_images_filepath
+        self.training_labels_filepath = training_labels_filepath
+        self.test_images_filepath = test_images_filepath
+        self.test_labels_filepath = test_labels_filepath
+
+    def read_images_labels(self, images_filepath, labels_filepath):
+        labels = []
+        with open(labels_filepath, 'rb') as file:
+            magic, size = struct.unpack(">II", file.read(8))
+            if magic != 2049:
+                raise ValueError('Magic number mismatch, expected 2049, got {}'.format(magic))
+            labels = array("B", file.read())
+
+        with open(images_filepath, 'rb') as file:
+            magic, size, rows, cols = struct.unpack(">IIII", file.read(16))
+            if magic != 2051:
+                raise ValueError('Magic number mismatch, expected 2051, got {}'.format(magic))
+            image_data = array("B", file.read())
+        images = []
+        for i in range(size):
+            img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols]).reshape(rows, cols)
+            images.append(img)
+        for i in range(size):
+            img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols])
+            img = img.reshape(28, 28)
+            images[i][:] = img
+
+        return images, labels
+
+    def load_data(self):
+        x_train, y_train = self.read_images_labels(self.training_images_filepath, self.training_labels_filepath)
+        x_test, y_test = self.read_images_labels(self.test_images_filepath, self.test_labels_filepath)
+        return (x_train, y_train), (x_test, y_test)
+
 
 
 #début de main
