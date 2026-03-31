@@ -106,7 +106,7 @@ class ForwardCNN():
             liste_relu.append(z)
         return liste_relu
 
-    def max_pooling(self, liste_relu): # a modifier
+    def max_pooling(self, liste_relu):
         '''
         :param matrice_relu: matrice apres activation
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
