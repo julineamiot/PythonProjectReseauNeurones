@@ -26,7 +26,7 @@ class ForwardCNN():
     def __init__(self, epaisseur_padding=1, taille_pooling=(2,2)):
         self.epaisseur_padding = epaisseur_padding
         self.taille_pooling = taille_pooling
-        self.filtres = [np.random.randn(3,3) for i in range(4)]
+        self.filtres = [np.random.randn(3,3) for i in range(4)] # a modifier
 
     def separation_couleurs(self, image): #henri
         '''
@@ -91,7 +91,7 @@ class ForwardCNN():
             liste_relu.append(z)
         return liste_relu
 
-    def max_pooling(self, liste_relu): # a modifier
+    def max_pooling(self, liste_relu):
         '''
         :param matrice_relu: matrice apres activation
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
