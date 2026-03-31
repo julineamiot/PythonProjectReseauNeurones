@@ -91,31 +91,52 @@ class ForwardCNN():
             liste_relu.append(z)
         return liste_relu
 
-    def max_pooling(self, liste_relu): #henri
+    def max_pooling(self, liste_relu): # a modifier
         '''
         :param matrice_relu: matrice apres activation
         :param taille: dimension de la matrice de selection pour le pooling (souvent 2x2, mais on generalise)
         :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
         '''
+
         liste_matrice_reduite = []
         hauteur, largeur = self.taille_pooling # hauteurs et largeurs de la matrice de pool
 
         for matrice_relu in liste_relu:
             h_avant, l_avant = matrice_relu.shape
 
-            h_apres = h_avant - hauteur + 1
-            l_apres = l_avant - largeur + 1
+            if h_avant % 2 == 0 and l_avant % 2 == 0:
+                h_apres = h_avant // 2
+                l_apres = l_avant // 2
 
-            nouvelle_matrice = np.zeros((h_apres, l_apres))
+                nouvelle_matrice = np.zeros((h_apres, l_apres))
 
-            for ligne in range(h_apres):
-                for col in range(l_apres):
-                    depart_h, fin_h = ligne, ligne + largeur
-                    depart_l, fin_l = col, col + hauteur
-                    zone_pooling = matrice_relu[depart_h : fin_h, depart_l: fin_l]
-                    nouvelle_matrice[ligne, col] = np.max(zone_pooling)
+                for ligne in range(h_apres):
+                    for col in range(l_apres):
+                        depart_h, fin_h = 2*ligne, 2*(ligne + 1)
+                        depart_l, fin_l = 2*col, 2*(col + 1)
+                        zone_pooling = matrice_relu[depart_h: fin_h, depart_l: fin_l]
+                        nouvelle_matrice[ligne, col] = np.max(zone_pooling)
 
-                    liste_matrice_reduite.append(nouvelle_matrice)
+                liste_matrice_reduite.append(nouvelle_matrice)
+
+            else:
+                np.insert(matrice_relu, l_avant + 1, 0, axis=1)
+                np.insert(matrice_relu, h_avant + 1, 0, axis=0)
+
+                h_apres = (h_avant + 1) // 2
+                l_apres = (l_avant + 1) // 2
+
+
+                nouvelle_matrice = np.zeros((h_apres, l_apres))
+
+                for ligne in range(h_apres):
+                    for col in range(l_apres):
+                        depart_h, fin_h = 2*ligne, 2*(ligne + 1)
+                        depart_l, fin_l = 2*col, 2*(col + 1)
+                        zone_pooling = matrice_relu[depart_h : fin_h, depart_l: fin_l]
+                        nouvelle_matrice[ligne, col] = np.max(zone_pooling)
+
+                liste_matrice_reduite.append(nouvelle_matrice)
 
         return liste_matrice_reduite
 
