@@ -98,20 +98,20 @@ class ForwardCNN():
         :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
         '''
         liste_matrice_reduite = []
-        hauteur, largeur = self.taille_pooling
+        hauteur, largeur = self.taille_pooling # hauteurs et largeurs de la matrice de pool
 
         for matrice_relu in liste_relu:
-            h, l = matrice_relu.shape
+            h_avant, l_avant = matrice_relu.shape
 
-            nouveau_h = h // hauteur
-            nouveau_l = l // largeur
+            h_apres = h_avant - hauteur + 1
+            l_apres = l_avant - largeur + 1
 
-            nouvelle_matrice = np.zeros((nouveau_h, nouveau_l))
+            nouvelle_matrice = np.zeros((h_apres, l_apres))
 
-            for ligne in range(nouveau_h):
-                for col in range(nouveau_l):
-                    depart_h, fin_h = ligne * hauteur, (ligne + 1) * hauteur
-                    depart_l, fin_l = col * largeur, (col + 1) * largeur
+            for ligne in range(h_apres):
+                for col in range(l_apres):
+                    depart_h, fin_h = ligne, ligne + hauteur
+                    depart_l, fin_l = col, col + largeur
                     zone_pooling = matrice_relu[depart_h : fin_h, depart_l: fin_l]
                     nouvelle_matrice[ligne, col] = np.max(zone_pooling)
 
