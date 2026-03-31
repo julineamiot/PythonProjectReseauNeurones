@@ -110,12 +110,13 @@ class ForwardCNN():
 
             for ligne in range(h_apres):
                 for col in range(l_apres):
-                    depart_h, fin_h = ligne, ligne + hauteur
-                    depart_l, fin_l = col, col + largeur
+                    depart_h, fin_h = ligne, ligne + largeur
+                    depart_l, fin_l = col, col + hauteur
                     zone_pooling = matrice_relu[depart_h : fin_h, depart_l: fin_l]
                     nouvelle_matrice[ligne, col] = np.max(zone_pooling)
 
-            liste_matrice_reduite.append(nouvelle_matrice)
+                    liste_matrice_reduite.append(nouvelle_matrice)
+
         return liste_matrice_reduite
 
     def applatir(self, liste_matrice): #juline
