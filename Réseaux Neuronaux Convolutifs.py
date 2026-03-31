@@ -67,14 +67,14 @@ class ForwardCNN():
         for filtre in self.filtres:
             matrice_sortie_filtre = np.zeros((h - 2, l - 2))
 
-            for i in range(h - 2):
-                for j in range(l - 2):
+            for ligne in range(h - 2):
+                for col in range(l - 2):
                     pixel_final = 0
                     for canal_couleur in liste_image_pad:
-                        zone = canal_couleur[i:i + 3, j:j + 3]
+                        zone = canal_couleur[ligne : ligne + 3, col : col + 3]
                         pixel_final = pixel_final + np.sum(zone * filtre)
 
-                    matrice_sortie_filtre[i, j] = pixel_final
+                    matrice_sortie_filtre[ligne, col] = pixel_final
 
             resultats_tous_filtres.append(matrice_sortie_filtre)
         return resultats_tous_filtres
@@ -98,21 +98,22 @@ class ForwardCNN():
         :return: matrice de taille plus petite avec max des 4 pixels pour chaque selection
         '''
         liste_matrice_reduite = []
-        i, j = self.taille_pooling
+        hauteur, largeur = self.taille_pooling
 
         for matrice_relu in liste_relu:
             h, l = matrice_relu.shape
 
-            nouveau_h = h // i
-            nouveau_l = l // j
+            nouveau_h = h // hauteur
+            nouveau_l = l // largeur
 
             nouvelle_matrice = np.zeros((nouveau_h, nouveau_l))
 
-            for y in range(nouveau_h):
-                for x in range(nouveau_l):
-                    # j*taille[0] pour sauter de 2 en 2 pour ne pas chevaucher
-                    zone_pooling = matrice_relu[y * i : (y + 1) * i, x * j : (x + 1) * j]
-                    nouvelle_matrice[y, x] = np.max(zone_pooling)
+            for ligne in range(nouveau_h):
+                for col in range(nouveau_l):
+                    depart_h, fin_h = ligne * hauteur, (ligne + 1) * hauteur
+                    depart_l, fin_l = col * largeur, (col + 1) * largeur
+                    zone_pooling = matrice_relu[depart_h : fin_h, depart_l: fin_l]
+                    nouvelle_matrice[ligne, col] = np.max(zone_pooling)
 
             liste_matrice_reduite.append(nouvelle_matrice)
         return liste_matrice_reduite
