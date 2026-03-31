@@ -26,7 +26,7 @@ class ForwardCNN():
     def __init__(self, epaisseur_padding=1, taille_pooling=(2,2)):
         self.epaisseur_padding = epaisseur_padding
         self.taille_pooling = taille_pooling
-        self.filtres = [np.random.randn(3,3) for i in range(4)] # a modifier
+        self.filtres = [np.random.randn(3,3) * (1/2) for i in range(4)]
 
     def separation_couleurs(self, image): #henri
         '''
