@@ -26,7 +26,7 @@ class ForwardCNN():
     def __init__(self, epaisseur_padding=1, taille_pooling=(2,2)):
         self.epaisseur_padding = epaisseur_padding
         self.taille_pooling = taille_pooling
-        self.filtres = [np.random.randn(3,3) for i in range(4)]
+        self.filtres = [(1/2) * np.random.randn(3,3) for i in range(4)]
 
     def separation_couleurs(self, image): #henri
         '''
@@ -79,6 +79,7 @@ class ForwardCNN():
             resultats_tous_filtres.append(matrice_sortie_filtre)
         return resultats_tous_filtres
 
+    """
     def relu_convolution(self, liste_matrice_convo): #juline
         '''
         :param liste_matrice_convo: liste de matrices de sortie de la fonction convolution
@@ -88,6 +89,20 @@ class ForwardCNN():
         liste_relu = []
         for matrice in liste_matrice_convo:
             z = np.maximum(0, matrice)
+            liste_relu.append(z)
+        return liste_relu
+    """
+
+    def leaky_relu_convolution(self, a, liste_matrice_convo):
+        '''
+        :param liste_matrice_convo: liste de matrices de sortie de la fonction convolution
+        si une valeur de la matrice est négative, on met un 0, sinon la valeur reste comme elle est
+        a : appartient [0;1[ mais très inférieur à 1
+        :return: liste de matrices de meme taille avec des a*valeur si la valeur < 0 et valeurs si valeur > 0
+        '''
+        liste_relu = []
+        for matrice in liste_matrice_convo:
+            z = np.where(matrice > 0, matrice, a*matrice)
             liste_relu.append(z)
         return liste_relu
 
