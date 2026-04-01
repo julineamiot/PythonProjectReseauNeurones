@@ -14,7 +14,7 @@ pour éviter le sur apprentissage, on peut tourner, flouter l'image
 carte de saillance : dire que l'on a beaucoup utiliser pour détecter l'objet
 
 elements modifiés pendant la backwardpropag : les poids et les biais, à la fois ceux de la convolution et ceux des couches fully connected """
-
+import os
 import struct
 from array import array
 import random
@@ -247,70 +247,74 @@ class ReseauNeurones():
 
 
 
-class MnistDataloader(object):
+class CatDogDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
-        # à changer en fonction de vos chemins d'accès sur vos ordinateurs
-        #input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones"
-        input_path = r"C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones"
+        self.input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones/PetImages"
+        # input_path = r"C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones"
+        self.train_path = os.path.join(self.input_path, "train")
+        self.test_path = os.path.join(self.input_path, "test")
 
-        training_images_filepath = input_path + "/train-images.idx3-ubyte"
-        training_labels_filepath = input_path + "/train-labels.idx1-ubyte"
-        test_images_filepath = input_path + "/t10k-images.idx3-ubyte"
-        test_labels_filepath = input_path + "/t10k-labels.idx1-ubyte"
-
-
-        self.training_images_filepath = training_images_filepath
-        self.training_labels_filepath = training_labels_filepath
-        self.test_images_filepath = test_images_filepath
-        self.test_labels_filepath = test_labels_filepath
-
-    def read_images_labels(self, images_filepath, labels_filepath):
-        labels = []
-        with open(labels_filepath, 'rb') as file:
-            magic, size = struct.unpack(">II", file.read(8))
-            if magic != 2049:
-                raise ValueError('Magic number mismatch, expected 2049, got {}'.format(magic))
-            labels = array("B", file.read())
-
-        with open(images_filepath, 'rb') as file:
-            magic, size, rows, cols = struct.unpack(">IIII", file.read(16))
-            if magic != 2051:
-                raise ValueError('Magic number mismatch, expected 2051, got {}'.format(magic))
-            image_data = array("B", file.read())
+    def read_images_labels(self, dossier_cible, nb_images_max=500):
+        """
+        Remplace l'ancienne lecture binaire par une lecture de fichiers JPG
+        """
         images = []
-        for i in range(size):
-            img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols]).reshape(rows, cols)
-            images.append(img)
-        for i in range(size):
-            img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols])
-            img = img.reshape(28, 28)
-            images[i][:] = img
+        labels = []
+        classes = {'Cat': 0, 'Dog': 1}
+
+        for nom_classe, etiquette in classes.items():
+            chemin_classe = os.path.join(dossier_cible, nom_classe)
+            fichiers = os.listdir(chemin_classe)[:nb_images_max]
+
+            for f in fichiers:
+                if f.lower().endswith((".jpg", ".jpeg", ".png")):
+                    img_path = os.path.join(chemin_classe, f)
+                    img = Img.open(img_path).convert('RGB').resize((28, 28))
+                    images.append(img)
+                    labels.append(etiquette)
 
         return images, labels
 
     def load_data(self):
-        x_train, y_train = self.read_images_labels(self.training_images_filepath, self.training_labels_filepath)
-        x_test, y_test = self.read_images_labels(self.test_images_filepath, self.test_labels_filepath)
+        x_train, y_train = self.read_images_labels("train", nb_images_max=100)
+        x_test, y_test = self.read_images_labels("test", nb_images_max=20)
         return (x_train, y_train), (x_test, y_test)
 
 
 
 #début de main
 if __name__ == "__main__":
+    dataloader = CatDogDataloader()
+    (x_train, y_train), (x_test, y_test) = dataloader.load_data()
+
     reseau_cnn = ForwardCNN(epaisseur_padding=1, taille_pooling=(2, 2))
-    img=Img.open("l'image").resize((28,28))
-
-    # forward
-    # partie convolution
-    rgb = reseau_cnn.separation_couleurs(img)
-    padding = reseau_cnn.padding(rgb)
-    convolu = reseau_cnn.convolution(padding)
-    activation = reseau_cnn.relu_convolution(convolu)
-    pooling = reseau_cnn.max_pooling(activation)
-    vecteur_final = reseau_cnn.applatir(pooling)
-
-    # partie reseau de neurones simple
     tailles = [784, 64, 10]
     reseau_simple = ReseauNeurones(tailles)
-    resultat = reseau_simple.forwardPropag(vecteur_final)
+
+    # entrainement
+    for i in range(3):
+        for image, label in zip(x_train, y_train):
+            # forward
+            # partie convolution
+            rgb = reseau_cnn.separation_couleurs(image)
+            padding = reseau_cnn.padding(rgb)
+            convolu = reseau_cnn.convolution(padding)
+            activation = reseau_cnn.leaky_relu_convolution(convolu)
+            pooling = reseau_cnn.max_pooling(activation)
+            vecteur_final = reseau_cnn.applatir(pooling)
+
+            # partie reseau de neurones simple
+            resultat = reseau_simple.backwardPropag(vecteur_final)
+
+    # test
+    reussite=0
+    for image, label in zip(x_test, y_test):
+        vecteur_test = reseau_cnn.applatir(reseau_cnn.max_pooling(reseau_cnn.leaky_relu_convolution(reseau_cnn.convolution(reseau_cnn.padding(reseau_cnn.separation_couleurs(image))))))
+        resultats=reseau_simple.forwardPropag(vecteur_test)
+        prediction = np.argmax(resultats[-1])
+
+        if prediction == label:
+            reussite= reussite+1
+
+    print ("Taux de reussite final : ", (reussite/len(x_test))*100, "%")
