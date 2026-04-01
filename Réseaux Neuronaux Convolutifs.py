@@ -293,13 +293,13 @@ if __name__ == "__main__":
     reseau_simple = ReseauNeurones(tailles)
     indices = list(range(len(x_train)))
     random.shuffle(indices)
-    x_train_mélange = []
-    y_train_mélange = []
+    x_train_melange = []
+    y_train_melange = []
     for i in indices:
-        x_train_mélange.append(x_train[i])
-        y_train_mélange.append(y_train[i])
-    x_train = x_train_mélange
-    y_train = y_train_mélange
+        x_train_melange.append(x_train[i])
+        y_train_melange.append(y_train[i])
+    x_train = x_train_melange
+    y_train = y_train_melange
 
     # entrainement
     for i in range(3):
