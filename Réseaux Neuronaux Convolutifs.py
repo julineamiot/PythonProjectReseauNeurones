@@ -230,7 +230,7 @@ class ReseauNeurones():
     def backwardPropag(self, vecteur_entree, label):
         activation, zs = self.forwardPropag(vecteur_entree)
 
-        cible=np.zeros(10)
+        cible=np.zeros(self.tailles[-1])
         cible[label]=1
         deltas=[None] * len(self.poids)
         deltas[-1]=activation[-1] - cible
@@ -261,7 +261,7 @@ class CatDogDataloader(object):
         """
         images = []
         labels = []
-        classes = {'Cat': 0, 'Dog': 1}
+        classes = {'cats': 0, 'dogs': 1}
 
         for nom_classe, etiquette in classes.items():
             chemin_classe = os.path.join(dossier_cible, nom_classe)
@@ -277,8 +277,8 @@ class CatDogDataloader(object):
         return images, labels
 
     def load_data(self):
-        x_train, y_train = self.read_images_labels("train", nb_images_max=100)
-        x_test, y_test = self.read_images_labels("test", nb_images_max=20)
+        x_train, y_train = self.read_images_labels(self.train_path, nb_images_max=100)
+        x_test, y_test = self.read_images_labels(self.test_path, nb_images_max=20)
         return (x_train, y_train), (x_test, y_test)
 
 
@@ -300,18 +300,19 @@ if __name__ == "__main__":
             rgb = reseau_cnn.separation_couleurs(image)
             padding = reseau_cnn.padding(rgb)
             convolu = reseau_cnn.convolution(padding)
-            activation = reseau_cnn.leaky_relu_convolution(convolu)
+            activation = reseau_cnn.leaky_relu_convolution(0.001, convolu)
             pooling = reseau_cnn.max_pooling(activation)
             vecteur_final = reseau_cnn.applatir(pooling)
 
             # partie reseau de neurones simple
-            resultat = reseau_simple.backwardPropag(vecteur_final)
+            resultat = reseau_simple.backwardPropag(vecteur_final, label)
 
     # test
     reussite=0
     for image, label in zip(x_test, y_test):
-        vecteur_test = reseau_cnn.applatir(reseau_cnn.max_pooling(reseau_cnn.leaky_relu_convolution(reseau_cnn.convolution(reseau_cnn.padding(reseau_cnn.separation_couleurs(image))))))
-        resultats=reseau_simple.forwardPropag(vecteur_test)
+        activation_test = reseau_cnn.leaky_relu_convolution(0.001, reseau_cnn.convolution(reseau_cnn.padding(reseau_cnn.separation_couleurs(image))))
+        vecteur_test = reseau_cnn.applatir(reseau_cnn.max_pooling(activation_test))
+        resultats, _ =reseau_simple.forwardPropag(vecteur_test)
         prediction = np.argmax(resultats[-1])
 
         if prediction == label:
