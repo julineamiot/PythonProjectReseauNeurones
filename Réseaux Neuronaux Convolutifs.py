@@ -193,7 +193,7 @@ class ReseauNeurones():
         self.biais = []
         self.learning_rate = 0.005
         for i in range(len(tailles) - 1):
-            self.poids.append(np.random.randn(tailles[i], tailles[i + 1]) * 0.1)
+            self.poids.append(np.random.randn(tailles[i], tailles[i + 1]))
             self.biais.append(np.zeros(tailles[i + 1]))
 
     def softmax_final(self, scores): #juline
@@ -250,8 +250,8 @@ class ReseauNeurones():
 class CatDogDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
-        self.input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones/PetImages"
-        # input_path = r"C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones"
+        #self.input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones/PetImages"
+        self.input_path = r"C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\PetImages"
         self.train_path = os.path.join(self.input_path, "train")
         self.test_path = os.path.join(self.input_path, "test")
 
@@ -289,8 +289,17 @@ if __name__ == "__main__":
     (x_train, y_train), (x_test, y_test) = dataloader.load_data()
 
     reseau_cnn = ForwardCNN(epaisseur_padding=1, taille_pooling=(2, 2))
-    tailles = [784, 64, 10]
+    tailles = [784, 64, 2]
     reseau_simple = ReseauNeurones(tailles)
+    indices = list(range(len(x_train)))
+    random.shuffle(indices)
+    x_train_mélange = []
+    y_train_mélange = []
+    for i in indices:
+        x_train_mélange.append(x_train[i])
+        y_train_mélange.append(y_train[i])
+    x_train = x_train_mélange
+    y_train = y_train_mélange
 
     # entrainement
     for i in range(3):
