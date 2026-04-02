@@ -250,8 +250,8 @@ class ReseauNeurones():
 class CatDogDataloader(object):
 
     def __init__(self): # training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath):
-        #self.input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones/PetImages"
-        self.input_path = r"C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\PetImages"
+        self.input_path = "/Users/julineamiot/Documents/PycharmProjects/PythonProjectReseauNeurones/PetImages"
+        # self.input_path = r"C:\Users\Utilisateur\PycharmProjects\PythonProjectReseauNeurones\PetImages"
         self.train_path = os.path.join(self.input_path, "train")
         self.test_path = os.path.join(self.input_path, "test")
 
@@ -302,7 +302,7 @@ if __name__ == "__main__":
     y_train = y_train_melange
 
     # entrainement
-    for i in range(3):
+    for i in range(10):
         for image, label in zip(x_train, y_train):
             # forward
             # partie convolution
