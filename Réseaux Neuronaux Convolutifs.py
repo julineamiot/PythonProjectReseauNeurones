@@ -12,8 +12,8 @@ pooling : réduire l'information et résumer l'information (moyenne, + grande va
 dense : mettre toutes les info en un veteur (si beaucoup d'image on peut faire 2 fois cette étape) le nb de dense correspond au nb de neurones que l'on doit avoir en sortie
 pour éviter le sur apprentissage, on peut tourner, flouter l'image
 carte de saillance : dire que l'on a beaucoup utiliser pour détecter l'objet
-
 elements modifiés pendant la backwardpropag : les poids et les biais, à la fois ceux de la convolution et ceux des couches fully connected """
+
 import os
 import struct
 from array import array
